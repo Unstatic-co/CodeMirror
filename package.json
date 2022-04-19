@@ -1,12 +1,11 @@
 {
-  "name": "codemirror",
+  "name": "unstatic-codemirror",
   "version": "5.65.2",
   "main": "lib/codemirror.js",
   "style": "lib/codemirror.css",
   "author": {
-    "name": "Marijn Haverbeke",
-    "email": "marijnh@gmail.com",
-    "url": "http://marijnhaverbeke.nl"
+    "name": "ntank",
+    "email": "tuananh@unstatic.co"
   },
   "description": "Full-featured in-browser code editor",
   "license": "MIT",
@@ -27,7 +26,7 @@
     "puppeteer": "^1.20.0",
     "rollup": "^1.26.3"
   },
-  "bugs": "http://github.com/codemirror/CodeMirror/issues",
+  "bugs": "https://github.com/Unstatic-co/CodeMirror/issues",
   "keywords": [
     "JavaScript",
     "CodeMirror",
@@ -36,7 +35,7 @@
   "homepage": "https://codemirror.net",
   "repository": {
     "type": "git",
-    "url": "https://github.com/codemirror/CodeMirror.git"
+    "url": "https://github.com/Unstatic-co/CodeMirror"
   },
   "jspm": {
     "directories": {},

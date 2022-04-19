@@ -93,6 +93,7 @@ export function CodeMirror(place, options) {
   if (webkit && options.lineWrapping &&
       getComputedStyle(display.lineDiv).textRendering == "optimizelegibility")
     display.lineDiv.style.textRendering = "auto"
+  
 }
 
 // The default configuration options.
