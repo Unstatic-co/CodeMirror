@@ -1,6 +1,6 @@
 {
-  "name": "unstatic-codemirror",
-  "version": "5.65.2",
+  "name": "appformula-codemirror",
+  "version": "1.0.2",
   "main": "lib/codemirror.js",
   "style": "lib/codemirror.css",
   "author": {
@@ -29,7 +29,7 @@
     "puppeteer": "^1.20.0",
     "rollup": "^1.26.3"
   },
-  "bugs": "https://github.com/Unstatic-co/CodeMirror/issues",
+  "bugs": "https://github.com/Unstatic-co/appformula-codemirror/issues",
   "keywords": [
     "JavaScript",
     "CodeMirror",
@@ -38,7 +38,7 @@
   "homepage": "https://codemirror.net",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Unstatic-co/CodeMirror"
+    "url": "https://github.com/Unstatic-co/appformula-codemirror"
   },
   "jspm": {
     "directories": {},
