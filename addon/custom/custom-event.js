@@ -40,6 +40,10 @@
     ['cm-invalidchar']: 'cm-invalidchar'
   }
 
+  const keyTagClass = {
+    'cm-variable': "cm-variable"
+  }
+
   // CodeMirror.on(document.documentElement, 'mouseup', function () {
   //   const elCodemirrorFocus = document.querySelector('.f-cm-focus');
   //   if (elCodemirrorFocus) {
@@ -85,7 +89,7 @@
     const elTagSelected = document.querySelector('.f-cm-tag-selected');
     const elCursors = document.querySelector('.CodeMirror-cursors');
     const textOfElement = _element.innerText || '';
-
+    
     if (elTagSelected) {
       elTagSelected.classList.remove('f-cm-tag-selected');
     }
@@ -94,6 +98,10 @@
       _element.classList.add('f-cm-tag-selected');
       elCursors.style.display = 'none';
     } else elCursors.style.display = 'unset';
+
+    if(keyTagClass[_element.className]){
+        state['textPrevSelection'] = textOfElement;
+    }
 
     state['textPrevSelection'] = textOfElement;
     state['mousedownCursors'] = cm.getDoc().getCursor();

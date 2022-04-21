@@ -15,7 +15,7 @@ export default [
 `,
       format: "umd",
       file: "lib/codemirror.js",
-      name: "CodeMirror"
+      name: "appformula-codemirror"
     },
     plugins: [ buble({namedFunctionExpressions: false}) ]
   },
@@ -24,7 +24,7 @@ export default [
     output: {
       format: "iife",
       file: "addon/runmode/runmode-standalone.js",
-      name: "CodeMirror",
+      name: "appformula-codemirror",
       freeze: false, // IE8 doesn't support Object.freeze.
     },
     plugins: [ buble({namedFunctionExpressions: false}) ]
@@ -34,7 +34,7 @@ export default [
     output: {
       format: "cjs",
       file: "addon/runmode/runmode.node.js",
-      name: "CodeMirror",
+      name: "appformula-codemirror",
       freeze: false, // IE8 doesn't support Object.freeze.
     },
     plugins: [ buble({namedFunctionExpressions: false}) ]

@@ -25,8 +25,8 @@
 /* GUTTER */
 
 .CodeMirror-gutters {
-  border-right: 1px solid #ddd;
-  background-color: #f7f7f7;
+  border-right: 1px solid #2B2B2B;
+  background-color: #2B2B2B;
   white-space: nowrap;
 }
 .CodeMirror-linenumbers {}
@@ -44,7 +44,7 @@
 /* CURSOR */
 
 .CodeMirror-cursor {
-  border-left: 1px solid black;
+  border-left: 1px solid #FFFFFF;
   border-right: none;
   width: 0;
 }
@@ -101,6 +101,10 @@
 
 /* DEFAULT THEME */
 
+span {
+  color: #FFFFFF;
+}
+
 .cm-s-default .cm-header {color: blue;}
 .cm-s-default .cm-quote {color: #090;}
 .cm-negative {color: #d44;}
@@ -110,18 +114,20 @@
 .cm-link {text-decoration: underline;}
 .cm-strikethrough {text-decoration: line-through;}
 
-.cm-s-default .cm-keyword {color: #708;}
+.cm-s-default .cm-keyword {color: #FFB571;}
 .cm-s-default .cm-atom {color: #219;}
-.cm-s-default .cm-number {color: #164;}
-.cm-s-default .cm-def {color: #00f;}
+.cm-s-default .cm-number {color: #AFCFA4;}
+.cm-s-default .cm-def {color: #CA87FF;}
 .cm-s-default .cm-variable,
 .cm-s-default .cm-punctuation,
 .cm-s-default .cm-property,
-.cm-s-default .cm-operator {}
+.cm-s-default .cm-operator {
+  /* color: #75A4FF; */
+}
 .cm-s-default .cm-variable-2 {color: #05a;}
 .cm-s-default .cm-variable-3, .cm-s-default .cm-type {color: #085;}
-.cm-s-default .cm-comment {color: #a50;}
-.cm-s-default .cm-string {color: #a11;}
+.cm-s-default .cm-comment {color: #979797;}
+.cm-s-default .cm-string {color: #EA7C63;}
 .cm-s-default .cm-string-2 {color: #f50;}
 .cm-s-default .cm-meta {color: #555;}
 .cm-s-default .cm-qualifier {color: #555;}
@@ -131,6 +137,12 @@
 .cm-s-default .cm-attribute {color: #00c;}
 .cm-s-default .cm-hr {color: #999;}
 .cm-s-default .cm-link {color: #00c;}
+.cm-s-default .cm-variable {
+  color: #75A4FF;
+}
+.cm-s-default .cm-property, .cm-s-default .cm-operator {
+  color: #FFFFFF;
+}
 
 .cm-s-default .cm-error {color: #f00;}
 .cm-invalidchar {color: #f00;}
@@ -152,7 +164,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {color: #a22;}
 .CodeMirror {
   position: relative;
   overflow: hidden;
-  background: white;
+  background: #2B2B2B;
 }
 
 .CodeMirror-scroll {
@@ -346,4 +358,9 @@ span.CodeMirror-selectedtext { background: none; }
 /* custom cursors */
 .cm-s-default pre span {
   cursor: context-menu !important;
+}
+
+/* custom height of line */
+.CodeMirror-code >div {
+  height: 35px;
 }
