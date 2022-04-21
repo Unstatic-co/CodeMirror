@@ -12,6 +12,9 @@
   "directories": {
     "lib": "./lib"
   },
+  "publishConfig": {
+    "@unstatic-co:registry": "https://npm.pkg.github.com/"
+  },
   "scripts": {
     "build": "rollup -c",
     "watch": "rollup -w -c",
