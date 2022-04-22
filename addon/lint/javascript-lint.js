@@ -56,7 +56,7 @@
           severity: error.code ? (error.code.startsWith('W') ? "warning" : "error") : "error",
           from: CodeMirror.Pos(error.line - 1, start),
           to: CodeMirror.Pos(error.line - 1, end)
-        };
+        }; 
 
         output.push(hint);
       }
