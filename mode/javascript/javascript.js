@@ -1,6 +1,13 @@
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: https://codemirror.net/LICENSE
 
+/**
+ * author: NTank
+ * (1) tokenBase():
+ * -> Check case word is dots of tag
+ * -> Check case word is tag
+ */
+
 (function(mod) {
   if (typeof exports == "object" && typeof module == "object") // CommonJS
     mod(require("../../lib/codemirror"));
@@ -10,6 +17,65 @@
     mod(CodeMirror);
 })(function(CodeMirror) {
 "use strict";
+
+  const codeColorTags = {
+    table: '#75A4FF',
+    currentValue: '#CA87FF',
+    currentUser: '#FFB571',
+    placeholder: '#919191',
+  }
+
+  const TagsKeyword = {
+    'products': 'products',
+    'table': 'table',
+    'currentuser': 'currentuser',
+    'currentvalue': 'currentvalue',
+    'namespace': 'namespace',
+    'placeholder': 'placeholder'
+  }
+
+  const formulaTags = {
+    Products: {
+      key: 'products',
+      type: 'table',
+      properties: {
+        
+      }
+    },
+    Cars: {
+      key: 'products',
+      type: 'card',
+      properties: {
+        
+      }
+    },
+    CurrentValue: {
+      key: 'currentvalue',
+      type: 'currentvalue',
+      properties: {
+        Date: 'date',
+        Discount: 'discount',
+        Name: 'Name',
+        Price: 'Price',
+      }
+    },
+    CurrentUser: {
+      key: 'currentuser',
+      type: 'currentuser',
+      properties: {
+        Name: 'Name',
+      }
+    },
+    predicate: {
+      key: 'placeholder',
+      type: 'placeholder',
+      properties: {}
+    }
+    
+  }
+
+let index = 0;
+let formulaTagCurrent = null
 
 CodeMirror.defineMode("javascript", function(config, parserConfig) {
   var indentUnit = config.indentUnit;
@@ -21,6 +87,8 @@ CodeMirror.defineMode("javascript", function(config, parserConfig) {
   var wordRE = parserConfig.wordCharacters || /[\w$\xa1-\uffff]/;
 
   // Tokenizer
+
+  console.log('RUN 11', config, parserConfig)
 
   var keywords = function(){
     function kw(type) {return {type: type, style: "keyword"};}
@@ -64,6 +132,11 @@ CodeMirror.defineMode("javascript", function(config, parserConfig) {
     return style;
   }
   function tokenBase(stream, state) {
+
+    index+=1;
+    console.log(1111111, stream.peek(), stream.current(), stream);
+
+    // return ret("variable", "variable", stream.current())
     var ch = stream.next();
     if (ch == '"' || ch == "'") {
       state.tokenize = tokenString(ch);
@@ -73,7 +146,27 @@ CodeMirror.defineMode("javascript", function(config, parserConfig) {
     } else if (ch == "." && stream.match("..")) {
       return ret("spread", "meta");
     } else if (/[\[\]{}\(\),;\:\.]/.test(ch)) {
-      return ret(ch);
+      const isDots = /[\.]/.test(ch);
+      // Check case word is dots of tag
+      return ret(ch)
+      if(isDots){
+        // const lineText = stream.string;
+        // const word = stream.current();
+
+        // setTimeout(() => {
+        //   const el = document.querySelector('.cm-table-tag');
+        //   el.style.color = 'red'
+        // }, 1000);
+
+        const formulaTag = formulaTagCurrent;
+        if(formulaTag && formulaTag.key){
+          const tagName = formulaTag.type;
+          // const _cm = stream.lineOracle.doc.cm;
+          return ret(`${tagName}-dots-tag-${stream.start}`, `${tagName}-dots-tag-${stream.start}`, ch);
+        }
+      }else {
+        return ret(ch)
+      };
     } else if (ch == "=" && stream.eat(">")) {
       return ret("=>", "operator");
     } else if (ch == "0" && stream.match(/^(?:x[\dA-Fa-f_]+|o[0-7_]+|b[01_]+)n?/)) {
@@ -122,19 +215,69 @@ CodeMirror.defineMode("javascript", function(config, parserConfig) {
     } else if (wordRE.test(ch)) {
       stream.eatWhile(wordRE);
       var word = stream.current()
+      console.log('WORD =>', word, ch, stream.eatWhile(wordRE))
       if (state.lastType != ".") {
         if (keywords.propertyIsEnumerable(word)) {
           var kw = keywords[word]
+          formulaTagCurrent = formulaTag;
           return ret(kw.type, kw.style, word)
         }
-        if (word == "async" && stream.match(/^(\s|\/\*([^*]|\*(?!\/))*?\*\/)*[\[\(\w]/, false))
+        if (word == "async" && stream.match(/^(\s|\/\*([^*]|\*(?!\/))*?\*\/)*[\[\(\w]/, false)){
+          formulaTagCurrent = formulaTag;
           return ret("async", "keyword", word)
+        }
       }
+
+      
+      const stringOfLine = stream.string;
+
+      const _formulaTag = getFormulaTag(word);
+      const subFormulaTag = getPropertyOfFormulaTag();
+
+      if(formulaTags[word]){
+        // had formula-tag
+        const indexWord= stringOfLine.indexOf(word);
+        const _shortStringOfLine = stringOfLine.slice(indexWord, 100 + indexWord);
+        const a = findTextSibling(word, stringOfLine);
+        console.log('RESULT =>', word, stringOfLine, _shortStringOfLine, a);
+
+      }
+
+      if(formulaTagCurrent && formulaTagCurrent.properties[word]){
+        // had sub formula-tag
+      }
+
+
+      // Check case word is tag
+      const _cm = stream.lineOracle.doc.cm;
+      // const _doc = _cm.getDoc();
+      const line = stream.lineOracle.line
+      const formulaTag = getFormulaTag(word);
+      const formulaTagFromState = formulaTagCurrent;
+      if(formulaTag){
+        state.formulaTags = formulaTag;
+        formulaTagCurrent = formulaTag;
+        const tagName = formulaTag.type;
+        window.classCurrent = `parent-${tagName}-tag-${stream.start}-${line}`;
+        return ret(`parent-${tagName}-tag-${stream.start}-${line}`, `parent-${tagName}-tag-${stream.start}-${line}`, word);
+      }
+
+      
+      
+      if(!formulaTag && formulaTagCurrent){
+        console.log('formulaTagCurrent', formulaTagCurrent.properties[word], formulaTagCurrent, word)
+          const formulaPropertyTag = formulaTagCurrent.properties[word]
+          if(formulaPropertyTag){
+            return ret(`sub-${formulaTagCurrent.type}-tag-${stream.start}-${line}`, `sub-${formulaTagCurrent.type}-tag-${stream.start}-${line}`, word);
+          }
+      }
+      formulaTagCurrent = null;
       return ret("variable", "variable", word)
     }
   }
 
   function tokenString(quote) {
+    console.log('RUN tokenString');
     return function(stream, state) {
       var escaped = false, next;
       if (jsonldMode && stream.peek() == "@" && stream.match(isJsonldKeyword)){
@@ -151,6 +294,7 @@ CodeMirror.defineMode("javascript", function(config, parserConfig) {
   }
 
   function tokenComment(stream, state) {
+    console.log('RUN tokenComment');
     var maybeEnd = false, ch;
     while (ch = stream.next()) {
       if (ch == "/" && maybeEnd) {
@@ -163,6 +307,7 @@ CodeMirror.defineMode("javascript", function(config, parserConfig) {
   }
 
   function tokenQuasi(stream, state) {
+    console.log('RUN tokenQuasi');
     var escaped = false, next;
     while ((next = stream.next()) != null) {
       if (!escaped && (next == "`" || next == "$" && stream.eat("{"))) {
@@ -776,6 +921,8 @@ CodeMirror.defineMode("javascript", function(config, parserConfig) {
     if (type == "{") return cont(pushlex("}"), classBody, poplex);
   }
   function classBody(type, value) {
+    console.log('RUN classBody', type, value)
+
     if (type == "async" ||
         (type == "variable" &&
          (value == "static" || value == "get" || value == "set" || (isTS && isModifier(value))) &&
@@ -800,6 +947,8 @@ CodeMirror.defineMode("javascript", function(config, parserConfig) {
     if (value == "@") return cont(expression, classBody)
   }
   function classfield(type, value) {
+    console.log('RUN classfield', type, value)
+
     if (value == "!") return cont(classfield)
     if (value == "?") return cont(classfield)
     if (type == ":") return cont(typeexpr, maybeAssign)
@@ -856,13 +1005,66 @@ CodeMirror.defineMode("javascript", function(config, parserConfig) {
   }
 
   function expressionAllowed(stream, state, backUp) {
+    console.log('RUN expressionAllowed');
     return state.tokenize == tokenBase &&
       /^(?:operator|sof|keyword [bcd]|case|new|export|default|spread|[\[{}\(,;:]|=>)$/.test(state.lastType) ||
       (state.lastType == "quasi" && /\{\s*$/.test(stream.string.slice(0, stream.pos - (backUp || 0))))
   }
 
-  // Interface
+  function getFormulaTag(formulatag) {
+    if(!formulatag || !!!formulatag){
+      return false;
+    }
+    const _formulatag = formulatag;
+    return formulaTags[_formulatag] || false;
+  }
 
+  function getPropertyOfFormulaTag(formulatag, property) {
+    if(!formulaTags || !property){
+      return false;
+    }
+    const _formulatag = formulatag.toLocaleLowerCase();
+    const _property = property.toLocaleLowerCase();
+    return formulaTags[_formulatag].properties[_property] || false;
+  }
+
+  function findTextSibling (word = '', stringOfLine = '') {
+    const indexWord= stringOfLine.indexOf(word);
+    const shortStringOfLine = stringOfLine.slice(indexWord, 100 + indexWord);
+    const shortStringOfLineReplace = shortStringOfLine.replace(/\(/g,'.');
+    const stringList = shortStringOfLineReplace.split('.');
+    return stringList[1] || '';
+  }
+
+  function hlParentTag(elmt, color, typeTag) {
+    elmt.setAttribute('style',
+      `border: 1px solid ${color};
+      border-radius: 25px;
+    `);
+    elmt.classList.add(`parent-${typeTag}-tag`);
+  }
+
+  function hlSubTag(elmt, elPrev, color, typeTag) {
+    // todo
+    
+    elPrev.setAttribute('style',
+      `border: 1px solid ${color};
+      border-top-left-radius: 25px;
+      border-bottom-left-radius: 25px;
+      border-right: none;
+    `);
+    elmt.setAttribute('style',
+      `border: 1px solid ${color};
+      border-top-right-radius: 25px;
+      border-bottom-right-radius: 25px;
+      border-left: none;
+    `);
+    elmt.classList.add(`sub-${typeTag}-tag`);
+  }
+
+  let exRunTimeout = null;
+
+  // Interface
   return {
     startState: function(basecolumn) {
       var state = {
@@ -890,10 +1092,43 @@ CodeMirror.defineMode("javascript", function(config, parserConfig) {
       var style = state.tokenize(stream, state);
       if (type == "comment") return style;
       state.lastType = type == "operator" && (content == "++" || content == "--") ? "incdec" : type;
+      if(exRunTimeout){
+        // clearTimeout(exRunTimeout)
+      }
+      exRunTimeout = setTimeout(() => {
+        const elmt = document.querySelector(`.cm-${style}`);
+        const elPrev = elmt ? elmt.previousElementSibling : null;
+        // const elNext = elmt.nextElementSibling;
+        
+        const elmtClass = elmt ? elmt.className : '';
+        if(elmtClass.includes('parent-table-tag')){
+          hlParentTag(elmt, codeColorTags.table, 'table' )
+        }
+
+        // current-value tag
+        if(elmtClass.includes('parent-currentvalue-tag')){
+          console.log('elemnent 22 =>', elmt, elPrev);
+          hlParentTag(elmt, codeColorTags.currentValue, formulaTags.CurrentValue.type)
+        }
+        if(elmtClass.includes('sub-currentvalue-tag')){
+          console.log('elemnent 22 =>', elmt, elPrev);
+          hlSubTag(elmt, elPrev, codeColorTags.currentValue, formulaTags.CurrentValue.type)
+        }
+        // current-user tag
+        if(elmtClass.includes('parent-currentuser-tag')){
+          hlParentTag(elmt, codeColorTags.currentUser, formulaTags.CurrentUser.type)
+        }
+        if(elmtClass.includes('sub-currentuser-tag')){
+          hlSubTag(elmt, elPrev, codeColorTags.currentUser, formulaTags.CurrentUser.type)
+        }
+
+      }, 100);
+      console.log('RUN TOKEN', index)
       return parseJS(state, style, type, content, stream);
     },
 
     indent: function(state, textAfter) {
+     console.log('RUN indent');
       if (state.tokenize == tokenComment || state.tokenize == tokenQuasi) return CodeMirror.Pass;
       if (state.tokenize != tokenBase) return 0;
       var firstChar = textAfter && textAfter.charAt(0), lexical = state.lexical, top

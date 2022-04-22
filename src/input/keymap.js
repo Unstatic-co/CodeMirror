@@ -1,4 +1,5 @@
 import { flipCtrlCmd, mac, presto } from "../util/browser.js"
+
 import { map } from "../util/misc.js"
 
 import { keyNames } from "./keynames.js"
@@ -143,5 +144,6 @@ export function keyName(event, noShift) {
 }
 
 export function getKeyMap(val) {
+  console.log('KEY ==>', val)
   return typeof val == "string" ? keyMap[val] : val
 }

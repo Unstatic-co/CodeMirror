@@ -14,6 +14,7 @@
 CodeMirror.runMode = function(string, modespec, callback, options) {
   var mode = CodeMirror.getMode(CodeMirror.defaults, modespec);
   var tabSize = (options && options.tabSize) || CodeMirror.defaults.tabSize;
+  console.log('RUN 22', content)
 
   // Create a tokenizing callback function if passed-in callback is a DOM element.
   if (callback.appendChild) {

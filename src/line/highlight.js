@@ -116,6 +116,7 @@ export function getLineStyles(cm, line, updateFrontier) {
     if (updateFrontier === cm.doc.highlightFrontier)
       cm.doc.modeFrontier = Math.max(cm.doc.modeFrontier, ++cm.doc.highlightFrontier)
   }
+  console.log('LINE STYLE ===>', line.styles)
   return line.styles
 }
 

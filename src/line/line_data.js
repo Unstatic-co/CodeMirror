@@ -177,6 +177,8 @@ function buildToken(builder, text, style, startStyle, endStyle, css, attributes)
       builder.pos++
     }
   }
+
+  
   builder.trailingSpace = displayText.charCodeAt(text.length - 1) == 32
   if (style || startStyle || endStyle || mustWrap || css || attributes) {
     let fullStyle = style || ""
@@ -190,6 +192,10 @@ function buildToken(builder, text, style, startStyle, endStyle, css, attributes)
     return builder.content.appendChild(token)
   }
   builder.content.appendChild(content)
+  // setTimeout(() => {
+  //   const el = document.querySelector('.parent-currentvalue-tag');
+  //   console.log('EL ==>', el)
+  // }, 100);
 }
 
 // Change some spaces to NBSP to prevent the browser from collapsing

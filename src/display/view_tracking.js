@@ -76,6 +76,7 @@ export function regChange(cm, from, to, lendiff) {
 // Register a change to a single line. Type must be one of "text",
 // "gutter", "class", "widget"
 export function regLineChange(cm, line, type) {
+  console.log('RUN regLineChange')
   cm.curOp.viewChanged = true
   let display = cm.display, ext = cm.display.externalMeasured
   if (ext && line >= ext.lineN && line < ext.lineN + ext.size)
@@ -86,6 +87,8 @@ export function regLineChange(cm, line, type) {
   if (lineView.node == null) return
   let arr = lineView.changes || (lineView.changes = [])
   if (indexOf(arr, type) == -1) arr.push(type)
+  const el = document.querySelector('.parent-currentvalue-tag');
+  console.log('EL ==>', cm, line, type, el)
 }
 
 // Clear the view.
