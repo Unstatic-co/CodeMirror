@@ -6,6 +6,11 @@
   else // Plain browser env
     mod(CodeMirror);
 })(function (CodeMirror) {
+import('../../src/util/browser.js').then(val => {
+
+  console.log('SSSSSSS =>', val)
+})
+
 
   const baseClass = {
     ['cm-keyword']: 'cm-keyword',
@@ -57,6 +62,7 @@
 
   CodeMirror.defineExtension('customEvent', function (cm) {
     // options = parseOptions(this, this.getCursor("start"), options);
+    console.log(22222222222, CodeMirror.keyNames)
     //* [f-state] -> store states: text preview selection | element cursors | position cursors when executing mousedown
     const state = {}
     const hintOptions = {
@@ -73,6 +79,17 @@
     })
 
     cm.on('keydown', function (_cm, event) {
+      console.log('skssksksk =>', _cm);
+
+      const keyName = CodeMirror.keyName(event);
+      const extra = cm.getOption('extraKeys');
+      const cmd = (extra && extra[keyName]) || CodeMirror.keyMap[cm.getOption("keyMap")][keyName];
+      
+      const existTag = document.querySelector('.cm-tag-math');
+      if(existTag){
+        existTag.classList.remove('cm-tag-math')
+        console.log(2222222,existTag);
+          }
       handleOnKeyDown(_cm, event, state);
     })
 
@@ -83,10 +100,39 @@
     cm.on('change', function (_cm, data) {
       const line = _cm.doc.getCursor().line;
       const textOfLine = _cm.doc.getLine(line);
+      const el = document.querySelector('.cm-table-tag');
+      if(el){
+        el.style.color = 'red';
+        el.classList.remove('cm-table-tag')
+      }
+      console.log('ON CHANGE =>',el);
+      if(el){
+        const elNext = el.nextElementSibling
+      }
+
+      // setTimeout(() => {
+      //   const el = document.querySelector('.cm-table-tag');
+      //   el.style.color = 'red';
+      // }, );
+
+      // const htmlNode = document.createElement('span');
+      // const newContent = document.createTextNode('Hi there and greetings!');
+      // htmlNode.appendChild(newContent);
+      // _cm.addWidget({ch: 1, line: 0}, {ch: 3, line: 0}, {
+      //   replacedWith(htmlNode)
+      // })
 
       const value = _cm.getValue();
       if (!value.includes(';') && !!textOfLine) {
         _cm.showHint(hintOptions)
+      }
+    })
+    
+    cm.on('update', function(){
+      const el = document.querySelector('.cm-test-math');
+      if(el){
+        const elNext = el.nextElementSibling
+        console.log('ON update =>', _cm, data, el);
       }
     })
   })
@@ -140,8 +186,13 @@
     const CHAR_BACKSPACE = 'Backspace',
       CODE_BACKSPACE = 8,
       CODE_DEL = 46,
-      CODE_SEMI_COLON = 186
-    if (event.key === CHAR_BACKSPACE || event.which === CODE_BACKSPACE || event.which === CODE_DEL) {
+      CODE_SEMI_COLON = 186,
+      keyName = CodeMirror.keyName(event);
+
+      // const isConditionPass = event.key === CHAR_BACKSPACE || event.which === CODE_BACKSPACE || event.which === CODE_DEL;
+
+
+    if (keyName === 'Backspace' || keyName === 'Delete') {
       const _somethingSelected = cm.somethingSelected();
       const _textPrevSelection = state.textPrevSelection;
       const hadWhiteSpaces = _textPrevSelection?.match(/\s+/g);

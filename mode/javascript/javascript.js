@@ -1,6 +1,13 @@
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: https://codemirror.net/LICENSE
 
+/**
+ * author: NTank
+ * (1) tokenBase():
+ * -> Check case word is dots of tag
+ * -> Check case word is tag
+ */
+
 (function(mod) {
   if (typeof exports == "object" && typeof module == "object") // CommonJS
     mod(require("../../lib/codemirror"));
@@ -10,6 +17,55 @@
     mod(CodeMirror);
 })(function(CodeMirror) {
 "use strict";
+
+  const TagsKeyword = {
+    'products': 'products',
+    'table': 'table',
+    'currentuser': 'currentuser',
+    'currentvalue': 'currentvalue',
+    'namespace': 'namespace',
+    'placeholder': 'placeholder'
+  }
+
+  const formulaTags = {
+    products: {
+      key: 'products',
+      type: 'table',
+      properties: {
+        
+      }
+    },
+    cars: {
+      key: 'products',
+      type: 'table',
+      properties: {
+        
+      }
+    },
+    currentvalue: {
+      key: 'currentvalue',
+      type: 'currentvalue',
+      properties: {
+        date: 'date',
+        discount: 'discount',
+        name: 'name',
+        price: 'price',
+      }
+    },
+    currentuser: {
+      key: 'products',
+      type: 'currentuser',
+      properties: {
+        name: 'name',
+      }
+    },
+    predicate: {
+      key: 'placeholder',
+      type: 'placeholder',
+      properties: {}
+    }
+    
+  }
 
 CodeMirror.defineMode("javascript", function(config, parserConfig) {
   var indentUnit = config.indentUnit;
@@ -21,6 +77,8 @@ CodeMirror.defineMode("javascript", function(config, parserConfig) {
   var wordRE = parserConfig.wordCharacters || /[\w$\xa1-\uffff]/;
 
   // Tokenizer
+
+  console.log('RUN 11', config, parserConfig)
 
   var keywords = function(){
     function kw(type) {return {type: type, style: "keyword"};}
@@ -64,6 +122,8 @@ CodeMirror.defineMode("javascript", function(config, parserConfig) {
     return style;
   }
   function tokenBase(stream, state) {
+    console.log(1111111, stream, state)
+    // return ret("variable", "variable", stream.current())
     var ch = stream.next();
     if (ch == '"' || ch == "'") {
       state.tokenize = tokenString(ch);
@@ -73,7 +133,24 @@ CodeMirror.defineMode("javascript", function(config, parserConfig) {
     } else if (ch == "." && stream.match("..")) {
       return ret("spread", "meta");
     } else if (/[\[\]{}\(\),;\:\.]/.test(ch)) {
-      return ret(ch);
+      const isDots = /[\.]/.test(ch);
+      // Check case word is dots of tag
+      if(isDots){
+        // const lineText = stream.string;
+        // const word = stream.current();
+
+        setTimeout(() => {
+          const el = document.querySelector('.cm-table-tag');
+          el.style.color = 'red'
+        }, 1000);
+
+        const formulaTag = state.formulaTags;
+        if(formulaTag && formulaTag.key){
+          const tagName = formulaTag.type;
+          // const _cm = stream.lineOracle.doc.cm;
+          return ret(`${tagName}-dots-tag`, `${tagName}-dots-tag`, ch);
+        }
+      }else return ret(ch);
     } else if (ch == "=" && stream.eat(">")) {
       return ret("=>", "operator");
     } else if (ch == "0" && stream.match(/^(?:x[\dA-Fa-f_]+|o[0-7_]+|b[01_]+)n?/)) {
@@ -122,6 +199,7 @@ CodeMirror.defineMode("javascript", function(config, parserConfig) {
     } else if (wordRE.test(ch)) {
       stream.eatWhile(wordRE);
       var word = stream.current()
+      console.log('WORD =>', word, ret("variable", "variable", word), ch, stream.eatWhile(wordRE))
       if (state.lastType != ".") {
         if (keywords.propertyIsEnumerable(word)) {
           var kw = keywords[word]
@@ -130,11 +208,28 @@ CodeMirror.defineMode("javascript", function(config, parserConfig) {
         if (word == "async" && stream.match(/^(\s|\/\*([^*]|\*(?!\/))*?\*\/)*[\[\(\w]/, false))
           return ret("async", "keyword", word)
       }
+      // Check case word is tag
+      // if(TagsKeyword[word.toLocaleLowerCase()]){
+      //   // if tag -> pass
+      //   // -> class by tag type
+      //   // '
+      //   const tag = `${TagsKeyword[word.toLocaleLowerCase()]}-tag` || 'variable';
+      //   return ret(tag, tag, word);
+      // }
+
+      const formulaTag = getFormulaTag(word)
+      if(formulaTag){
+        state.formulaTags = formulaTag;
+        const tagName = formulaTag.type;
+        return ret(`${tagName}-tag`, `${tagName}-tag`, word);
+      }
+
       return ret("variable", "variable", word)
     }
   }
 
   function tokenString(quote) {
+    console.log('RUN tokenString');
     return function(stream, state) {
       var escaped = false, next;
       if (jsonldMode && stream.peek() == "@" && stream.match(isJsonldKeyword)){
@@ -151,6 +246,7 @@ CodeMirror.defineMode("javascript", function(config, parserConfig) {
   }
 
   function tokenComment(stream, state) {
+    console.log('RUN tokenComment');
     var maybeEnd = false, ch;
     while (ch = stream.next()) {
       if (ch == "/" && maybeEnd) {
@@ -163,6 +259,7 @@ CodeMirror.defineMode("javascript", function(config, parserConfig) {
   }
 
   function tokenQuasi(stream, state) {
+    console.log('RUN tokenQuasi');
     var escaped = false, next;
     while ((next = stream.next()) != null) {
       if (!escaped && (next == "`" || next == "$" && stream.eat("{"))) {
@@ -776,6 +873,8 @@ CodeMirror.defineMode("javascript", function(config, parserConfig) {
     if (type == "{") return cont(pushlex("}"), classBody, poplex);
   }
   function classBody(type, value) {
+    console.log('RUN classBody', type, value)
+
     if (type == "async" ||
         (type == "variable" &&
          (value == "static" || value == "get" || value == "set" || (isTS && isModifier(value))) &&
@@ -800,6 +899,8 @@ CodeMirror.defineMode("javascript", function(config, parserConfig) {
     if (value == "@") return cont(expression, classBody)
   }
   function classfield(type, value) {
+    console.log('RUN classfield', type, value)
+
     if (value == "!") return cont(classfield)
     if (value == "?") return cont(classfield)
     if (type == ":") return cont(typeexpr, maybeAssign)
@@ -856,13 +957,30 @@ CodeMirror.defineMode("javascript", function(config, parserConfig) {
   }
 
   function expressionAllowed(stream, state, backUp) {
+    console.log('RUN expressionAllowed');
     return state.tokenize == tokenBase &&
       /^(?:operator|sof|keyword [bcd]|case|new|export|default|spread|[\[{}\(,;:]|=>)$/.test(state.lastType) ||
       (state.lastType == "quasi" && /\{\s*$/.test(stream.string.slice(0, stream.pos - (backUp || 0))))
   }
 
-  // Interface
+  function getFormulaTag(formulatag) {
+    if(!formulatag || !!!formulatag){
+      return false;
+    }
+    const _formulatag = formulatag.toLocaleLowerCase();
+    return formulaTags[_formulatag] || false;
+  }
 
+  function getPropertyOfFormulaTag(formulatag, property) {
+    if(!formulaTags || !property){
+      return false;
+    }
+    const _formulatag = formulatag.toLocaleLowerCase();
+    const _property = property.toLocaleLowerCase();
+    return formulaTags[_formulatag].properties[_property] || false;
+  }
+
+  // Interface
   return {
     startState: function(basecolumn) {
       var state = {
@@ -894,6 +1012,7 @@ CodeMirror.defineMode("javascript", function(config, parserConfig) {
     },
 
     indent: function(state, textAfter) {
+     console.log('RUN indent');
       if (state.tokenize == tokenComment || state.tokenize == tokenQuasi) return CodeMirror.Pass;
       if (state.tokenize != tokenBase) return 0;
       var firstChar = textAfter && textAfter.charAt(0), lexical = state.lexical, top

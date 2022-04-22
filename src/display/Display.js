@@ -111,4 +111,5 @@ export function Display(place, doc, input, options) {
   renderGutters(d)
 
   input.init(d)
+
 }
