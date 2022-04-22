@@ -14,22 +14,22 @@ Platform:
   win32 x64
 
 Trace: 
-  Error: canceled
-      at Interface.<anonymous> (C:\Program Files (x86)\Yarn\lib\cli.js:136724:13)
-      at Interface.emit (node:events:365:28)
-      at Interface._ttyWrite (node:readline:1007:16)
-      at ReadStream.onkeypress (node:readline:271:10)
-      at ReadStream.emit (node:events:365:28)
-      at emitKeys (node:internal/readline/utils:358:14)
-      at emitKeys.next (<anonymous>)
-      at ReadStream.onData (node:readline:1281:36)
-      at ReadStream.emit (node:events:365:28)
-      at addChunk (node:internal/streams/readable:314:12)
+  Error: https://registry.npmjs.org/-/user/org.couchdb.user:ntank: failed to authenticate: Could not authenticate ntank: bad password
+      at Request.params.callback [as _callback] (C:\Program Files (x86)\Yarn\lib\cli.js:65939:18)
+      at Request.self.callback (C:\Program Files (x86)\Yarn\lib\cli.js:140464:22)
+      at Request.emit (node:events:365:28)
+      at Request.<anonymous> (C:\Program Files (x86)\Yarn\lib\cli.js:141436:10)
+      at Request.emit (node:events:365:28)
+      at IncomingMessage.<anonymous> (C:\Program Files (x86)\Yarn\lib\cli.js:141358:12)
+      at Object.onceWrapper (node:events:471:28)
+      at IncomingMessage.emit (node:events:377:35)
+      at endReadableNT (node:internal/streams/readable:1312:12)
+      at processTicksAndRejections (node:internal/process/task_queues:83:21)
 
 npm manifest: 
   {
-    "name": "appformula-codemirror",
-    "version": "1.0.0",
+    "name": "appformula-codemirror-v2",
+    "version": "1.0.1",
     "main": "lib/codemirror.js",
     "style": "lib/codemirror.css",
     "author": {
@@ -62,6 +62,7 @@ npm manifest:
     "keywords": [
       "JavaScript",
       "CodeMirror",
+      "appformula-codemirror",
       "Editor"
     ],
     "homepage": "https://codemirror.net",

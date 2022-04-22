@@ -1,6 +1,6 @@
 {
-  "name": "appformula-codemirror-v2",
-  "version": "1.0.4",
+  "name": "@unstatic-co/appformula-codemirror",
+  "version": "1.0.1",
   "main": "lib/codemirror.js",
   "style": "lib/codemirror.css",
   "author": {
@@ -39,7 +39,7 @@
   "homepage": "https://codemirror.net",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Unstatic-co/appformula-codemirror"
+    "url": "git://github.com/Unstatic-co/appformula-codemirror"
   },
   "jspm": {
     "directories": {},

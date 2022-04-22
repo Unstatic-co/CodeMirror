@@ -356,11 +356,25 @@ div.CodeMirror-dragcursors {
 span.CodeMirror-selectedtext { background: none; }
 
 /* custom cursors */
-.cm-s-default pre span {
+.cm-s-default pre .cm-keyword {
   cursor: context-menu !important;
 }
 
 /* custom height of line */
 .CodeMirror-code >div {
   height: 35px;
+}
+/* todo */
+.cm-s-default .cm-keyword {
+  padding: 1px 5px !important;
+  border: 1px solid #75A4FF;
+  border-radius: 20px;
+  color: #75A4FF !important;
+}
+
+.CodeMirror-line .f-cm-tag-selected {
+  background-color: #0f67eb !important;
+  border: 1px solid #0f67eb !important;
+  outline: 2px solid #0f67eb !important;
+  color: white !important;
 }

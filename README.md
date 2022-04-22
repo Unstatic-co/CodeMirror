@@ -16,13 +16,7 @@ page](https://codemirror.net). For questions and discussion, use the
 [discussion forum](https://discuss.codemirror.net/).
 ### Installation
 
-Either get the [zip file](https://codemirror.net/codemirror.zip) with
-the latest version, or make sure you have [Node](https://nodejs.org/)
-installed and run:
-
     npm install appformula-codemirror
-or
-    yarn add appformula-codemirror
 
 ### Quickstart
 

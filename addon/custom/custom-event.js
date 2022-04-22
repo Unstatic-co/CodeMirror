@@ -41,7 +41,7 @@
   }
 
   const keyTagClass = {
-    'cm-variable': "cm-variable"
+    'cm-keyword': "cm-keyword"
   }
 
   // CodeMirror.on(document.documentElement, 'mouseup', function () {
@@ -59,6 +59,14 @@
     // options = parseOptions(this, this.getCursor("start"), options);
     //* [f-state] -> store states: text preview selection | element cursors | position cursors when executing mousedown
     const state = {}
+    const hintOptions = {
+      tables: {
+        table1: ["column1", "column2", "column3", "etc"],
+        table2: ["column1", "column2", "column3", "etc"],
+        another_table: ["columnA", "columnB"],
+      },
+      completeSingle: false
+    }
 
     cm.on('mousedown', function (_cm, event) {
       handleOnMousedown(_cm, event, state);
@@ -70,6 +78,16 @@
 
     cm.on('dblclick', function (_cm, event) {
       handleDblclick(cm, event, state)
+    })
+
+    cm.on('change', function (_cm, data) {
+      const line = _cm.doc.getCursor().line;
+      const textOfLine = _cm.doc.getLine(line);
+
+      const value = _cm.getValue();
+      if (!value.includes(';') && !!textOfLine) {
+        _cm.showHint(hintOptions)
+      }
     })
   })
 
@@ -89,21 +107,22 @@
     const elTagSelected = document.querySelector('.f-cm-tag-selected');
     const elCursors = document.querySelector('.CodeMirror-cursors');
     const textOfElement = _element.innerText || '';
-    
+
     if (elTagSelected) {
       elTagSelected.classList.remove('f-cm-tag-selected');
     }
 
-    if (baseClass[_element.className]) {
+    // if (baseClass[_element.className]) {
+    //   _element.classList.add('f-cm-tag-selected');
+    //   elCursors.style.display = 'none';
+    // } else elCursors.style.display = 'unset';
+
+    if (keyTagClass[_element.className]) {
+      state['textPrevSelection'] = textOfElement;
       _element.classList.add('f-cm-tag-selected');
       elCursors.style.display = 'none';
     } else elCursors.style.display = 'unset';
 
-    if(keyTagClass[_element.className]){
-        state['textPrevSelection'] = textOfElement;
-    }
-
-    state['textPrevSelection'] = textOfElement;
     state['mousedownCursors'] = cm.getDoc().getCursor();
     state['elCursors'] = elCursors;
   }
@@ -118,12 +137,15 @@
    * @returns () => void
    */
   function handleOnKeyDown(cm, event, state) {
-    const CHAR_BACKSPACE = 'Backspace';
-    if (event.key === CHAR_BACKSPACE) {
+    const CHAR_BACKSPACE = 'Backspace',
+      CODE_BACKSPACE = 8,
+      CODE_DEL = 46,
+      CODE_SEMI_COLON = 186
+    if (event.key === CHAR_BACKSPACE || event.which === CODE_BACKSPACE || event.which === CODE_DEL) {
       const _somethingSelected = cm.somethingSelected();
       const _textPrevSelection = state.textPrevSelection;
-      const hadWhiteSpaces = _textPrevSelection.match(/\s+/g);
-      const hadDots = _textPrevSelection.match(/\./g);
+      const hadWhiteSpaces = _textPrevSelection?.match(/\s+/g);
+      const hadDots = _textPrevSelection?.match(/\./g);
       // const wordsWithoutDots = _textPrevSelection.match(/(^|\s)([^\s\.]+)($|\s)/g);
       if (_somethingSelected || hadWhiteSpaces || hadDots || !!!_textPrevSelection) return;
 
@@ -148,6 +170,9 @@
         }
 
       _doc.setSelection(anchor, head);
+    }
+    if(event.which === CODE_SEMI_COLON){
+      state['hadSemiColon'] = true;
     }
   }
 
