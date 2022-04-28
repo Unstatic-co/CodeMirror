@@ -144,6 +144,5 @@ export function keyName(event, noShift) {
 }
 
 export function getKeyMap(val) {
-  console.log('KEY ==>', val)
   return typeof val == "string" ? keyMap[val] : val
 }

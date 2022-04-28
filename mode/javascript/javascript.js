@@ -18,54 +18,43 @@
 })(function(CodeMirror) {
 "use strict";
 
-  const TagsKeyword = {
-    'products': 'products',
-    'table': 'table',
-    'currentuser': 'currentuser',
-    'currentvalue': 'currentvalue',
-    'namespace': 'namespace',
-    'placeholder': 'placeholder'
-  }
-
   const formulaTags = {
-    products: {
+    Products: {
       key: 'products',
       type: 'table',
-      properties: {
-        
-      }
+      properties: null
     },
-    cars: {
+    Cars: {
       key: 'products',
-      type: 'table',
-      properties: {
-        
-      }
+      type: 'card',
+      properties: null
     },
-    currentvalue: {
+    CurrentValue: {
       key: 'currentvalue',
       type: 'currentvalue',
       properties: {
-        date: 'date',
-        discount: 'discount',
-        name: 'name',
-        price: 'price',
+        Date: 'date',
+        Discount: 'discount',
+        Name: 'Name',
+        Price: 'Price',
       }
     },
-    currentuser: {
-      key: 'products',
+    CurrentUser: {
+      key: 'currentuser',
       type: 'currentuser',
       properties: {
-        name: 'name',
+        Name: 'Name'
       }
     },
     predicate: {
       key: 'placeholder',
       type: 'placeholder',
-      properties: {}
+      properties: null
     }
     
   }
+
+let formulaTagCurrent = null
 
 CodeMirror.defineMode("javascript", function(config, parserConfig) {
   var indentUnit = config.indentUnit;
@@ -77,9 +66,6 @@ CodeMirror.defineMode("javascript", function(config, parserConfig) {
   var wordRE = parserConfig.wordCharacters || /[\w$\xa1-\uffff]/;
 
   // Tokenizer
-
-  console.log('RUN 11', config, parserConfig)
-
   var keywords = function(){
     function kw(type) {return {type: type, style: "keyword"};}
     var A = kw("keyword a"), B = kw("keyword b"), C = kw("keyword c"), D = kw("keyword d");
@@ -122,68 +108,72 @@ CodeMirror.defineMode("javascript", function(config, parserConfig) {
     return style;
   }
   function tokenBase(stream, state) {
-    console.log(1111111, stream, state)
     // return ret("variable", "variable", stream.current())
     var ch = stream.next();
     if (ch == '"' || ch == "'") {
       state.tokenize = tokenString(ch);
+      formulaTagCurrent = null;
       return state.tokenize(stream, state);
     } else if (ch == "." && stream.match(/^\d[\d_]*(?:[eE][+\-]?[\d_]+)?/)) {
+      // formulaTagCurrent = null;
       return ret("number", "number");
     } else if (ch == "." && stream.match("..")) {
+      // formulaTagCurrent = null;
       return ret("spread", "meta");
     } else if (/[\[\]{}\(\),;\:\.]/.test(ch)) {
-      const isDots = /[\.]/.test(ch);
-      // Check case word is dots of tag
-      if(isDots){
-        // const lineText = stream.string;
-        // const word = stream.current();
-
-        setTimeout(() => {
-          const el = document.querySelector('.cm-table-tag');
-          el.style.color = 'red'
-        }, 1000);
-
-        const formulaTag = state.formulaTags;
-        if(formulaTag && formulaTag.key){
-          const tagName = formulaTag.type;
-          // const _cm = stream.lineOracle.doc.cm;
-          return ret(`${tagName}-dots-tag`, `${tagName}-dots-tag`, ch);
-        }
-      }else return ret(ch);
+      //[Ntank] Check case word is dots of tag
+      const word = stream.current();
+      const isDots = word.match(/\./g);
+      if(isDots && isDots.length && formulaTagCurrent){
+        const _class = `dots-${formulaTagCurrent.type}-tag`
+        return ret(_class, _class, word);
+      }
+      // formulaTagCurrent = null;
+      return ret(ch)
     } else if (ch == "=" && stream.eat(">")) {
+      formulaTagCurrent = null;
       return ret("=>", "operator");
     } else if (ch == "0" && stream.match(/^(?:x[\dA-Fa-f_]+|o[0-7_]+|b[01_]+)n?/)) {
+      formulaTagCurrent = null;
       return ret("number", "number");
     } else if (/\d/.test(ch)) {
       stream.match(/^[\d_]*(?:n|(?:\.[\d_]*)?(?:[eE][+\-]?[\d_]+)?)?/);
+      formulaTagCurrent = null;
       return ret("number", "number");
     } else if (ch == "/") {
       if (stream.eat("*")) {
         state.tokenize = tokenComment;
+        // formulaTagCurrent = null;
         return tokenComment(stream, state);
       } else if (stream.eat("/")) {
         stream.skipToEnd();
+        // formulaTagCurrent = null;
         return ret("comment", "comment");
       } else if (expressionAllowed(stream, state, 1)) {
         readRegexp(stream);
         stream.match(/^\b(([gimyus])(?![gimyus]*\2))+\b/);
+        // formulaTagCurrent = null;
         return ret("regexp", "string-2");
       } else {
         stream.eat("=");
+        formulaTagCurrent = null;
         return ret("operator", "operator", stream.current());
       }
     } else if (ch == "`") {
       state.tokenize = tokenQuasi;
+      formulaTagCurrent = null;
       return tokenQuasi(stream, state);
     } else if (ch == "#" && stream.peek() == "!") {
       stream.skipToEnd();
+      formulaTagCurrent = null;
       return ret("meta", "meta");
     } else if (ch == "#" && stream.eatWhile(wordRE)) {
+      // formulaTagCurrent = null;
       return ret("variable", "property")
     } else if (ch == "<" && stream.match("!--") ||
                (ch == "-" && stream.match("->") && !/\S/.test(stream.string.slice(0, stream.start)))) {
       stream.skipToEnd()
+      // formulaTagCurrent = null;
       return ret("comment", "comment")
     } else if (isOperatorChar.test(ch)) {
       if (ch != ">" || !state.lexical || state.lexical.type != ">") {
@@ -195,41 +185,61 @@ CodeMirror.defineMode("javascript", function(config, parserConfig) {
         }
       }
       if (ch == "?" && stream.eat(".")) return ret(".")
+      formulaTagCurrent = null;
       return ret("operator", "operator", stream.current());
     } else if (wordRE.test(ch)) {
       stream.eatWhile(wordRE);
       var word = stream.current()
-      console.log('WORD =>', word, ret("variable", "variable", word), ch, stream.eatWhile(wordRE))
       if (state.lastType != ".") {
         if (keywords.propertyIsEnumerable(word)) {
           var kw = keywords[word]
+          formulaTagCurrent = null;
           return ret(kw.type, kw.style, word)
         }
-        if (word == "async" && stream.match(/^(\s|\/\*([^*]|\*(?!\/))*?\*\/)*[\[\(\w]/, false))
+        if (word == "async" && stream.match(/^(\s|\/\*([^*]|\*(?!\/))*?\*\/)*[\[\(\w]/, false)){
+          formulaTagCurrent = null;
           return ret("async", "keyword", word)
+        }
       }
-      // Check case word is tag
-      // if(TagsKeyword[word.toLocaleLowerCase()]){
-      //   // if tag -> pass
-      //   // -> class by tag type
-      //   // '
-      //   const tag = `${TagsKeyword[word.toLocaleLowerCase()]}-tag` || 'variable';
-      //   return ret(tag, tag, word);
-      // }
+      
+      //[Ntank] had formula-tag
+      const stringOfLine = stream.string;
+      if(formulaTags[word]){
+        formulaTagCurrent = formulaTags[word];
+        const indexWord= stringOfLine.indexOf(word);
+        const nextText = findTextSibling(word, stringOfLine, stream.start);
+        const _isPropertyTag = isPropertyTag(nextText, formulaTagCurrent);
+        const tagType = formulaTags[word].type;
+        if(_isPropertyTag){
+          return ret(`start-${tagType}-tag`, `start-${tagType}-tag`, word);
+        } 
+        return ret(`single-${tagType}-tag`, `single-${tagType}-tag`, word);
 
-      const formulaTag = getFormulaTag(word)
-      if(formulaTag){
-        state.formulaTags = formulaTag;
-        const tagName = formulaTag.type;
-        return ret(`${tagName}-tag`, `${tagName}-tag`, word);
       }
+      if(formulaTagCurrent){
+        const _isPropertyTag = isPropertyTag(word, formulaTagCurrent);
+        if(_isPropertyTag){
+          const nextText = findTextSibling(word, stringOfLine, stream.start);
+          const tagType = formulaTagCurrent.type;
+          if(!!!nextText) {
+            return ret(`end-${tagType}-tag`, `end-${tagType}-tag`, word);
+          }
+          const _isPropertySiblingTag = isPropertyTag(nextText, formulaTagCurrent);
+          if(_isPropertySiblingTag){
+            return ret(`middle-${tagType}-tag`, `middle-${tagType}-tag`, word);
+          }
 
+          return ret(`end-${tagType}-tag`, `end-${tagType}-tag`, word);
+
+        }
+      }
+      formulaTagCurrent = null;
+      
       return ret("variable", "variable", word)
     }
   }
 
   function tokenString(quote) {
-    console.log('RUN tokenString');
     return function(stream, state) {
       var escaped = false, next;
       if (jsonldMode && stream.peek() == "@" && stream.match(isJsonldKeyword)){
@@ -246,7 +256,6 @@ CodeMirror.defineMode("javascript", function(config, parserConfig) {
   }
 
   function tokenComment(stream, state) {
-    console.log('RUN tokenComment');
     var maybeEnd = false, ch;
     while (ch = stream.next()) {
       if (ch == "/" && maybeEnd) {
@@ -259,7 +268,6 @@ CodeMirror.defineMode("javascript", function(config, parserConfig) {
   }
 
   function tokenQuasi(stream, state) {
-    console.log('RUN tokenQuasi');
     var escaped = false, next;
     while ((next = stream.next()) != null) {
       if (!escaped && (next == "`" || next == "$" && stream.eat("{"))) {
@@ -873,8 +881,6 @@ CodeMirror.defineMode("javascript", function(config, parserConfig) {
     if (type == "{") return cont(pushlex("}"), classBody, poplex);
   }
   function classBody(type, value) {
-    console.log('RUN classBody', type, value)
-
     if (type == "async" ||
         (type == "variable" &&
          (value == "static" || value == "get" || value == "set" || (isTS && isModifier(value))) &&
@@ -899,8 +905,6 @@ CodeMirror.defineMode("javascript", function(config, parserConfig) {
     if (value == "@") return cont(expression, classBody)
   }
   function classfield(type, value) {
-    console.log('RUN classfield', type, value)
-
     if (value == "!") return cont(classfield)
     if (value == "?") return cont(classfield)
     if (type == ":") return cont(typeexpr, maybeAssign)
@@ -957,27 +961,26 @@ CodeMirror.defineMode("javascript", function(config, parserConfig) {
   }
 
   function expressionAllowed(stream, state, backUp) {
-    console.log('RUN expressionAllowed');
     return state.tokenize == tokenBase &&
       /^(?:operator|sof|keyword [bcd]|case|new|export|default|spread|[\[{}\(,;:]|=>)$/.test(state.lastType) ||
       (state.lastType == "quasi" && /\{\s*$/.test(stream.string.slice(0, stream.pos - (backUp || 0))))
   }
 
-  function getFormulaTag(formulatag) {
-    if(!formulatag || !!!formulatag){
-      return false;
-    }
-    const _formulatag = formulatag.toLocaleLowerCase();
-    return formulaTags[_formulatag] || false;
+  function isPropertyTag (word = '', formulaTag) {
+    const _word = word.trim();
+    if(!formulaTag || !formulaTag.properties) return false
+    return formulaTag.properties.hasOwnProperty(_word);
   }
 
-  function getPropertyOfFormulaTag(formulatag, property) {
-    if(!formulaTags || !property){
-      return false;
-    }
-    const _formulatag = formulatag.toLocaleLowerCase();
-    const _property = property.toLocaleLowerCase();
-    return formulaTags[_formulatag].properties[_property] || false;
+  function findTextSibling (word = '', stringOfLine = '', start) {
+    const _stringOfLine = stringOfLine.slice(0, start+word.length)
+    const indexWord = _stringOfLine.lastIndexOf(word);
+    const shortStringOfLine = stringOfLine.slice(indexWord, 100 + indexWord);
+    
+    // const shortStringOfLineReplace = shortStringOfLine.replace(/\(/g,'.').replace(/\)/g,'.');
+    const shortStringOfLineReplace = shortStringOfLine.replace(/\(/g,'.').replace(/\)/g,'.').replace(/\=/g,'.');
+    const stringList = shortStringOfLineReplace.trim().split('.');
+    return stringList[1] || '';
   }
 
   // Interface
@@ -1008,11 +1011,11 @@ CodeMirror.defineMode("javascript", function(config, parserConfig) {
       var style = state.tokenize(stream, state);
       if (type == "comment") return style;
       state.lastType = type == "operator" && (content == "++" || content == "--") ? "incdec" : type;
+     
       return parseJS(state, style, type, content, stream);
     },
 
     indent: function(state, textAfter) {
-     console.log('RUN indent');
       if (state.tokenize == tokenComment || state.tokenize == tokenQuasi) return CodeMirror.Pass;
       if (state.tokenize != tokenBase) return 0;
       var firstChar = textAfter && textAfter.charAt(0), lexical = state.lexical, top

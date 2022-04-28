@@ -261,9 +261,6 @@ span {
   color: #00c;
 }
 
-.cm-s-default .cm-variable {
-  color: #75A4FF;
-}
 
 .cm-s-default .cm-property,
 .cm-s-default .cm-operator {
@@ -567,23 +564,12 @@ span.CodeMirror-selectedtext {
   background: none;
 }
 
-/* custom cursors */
-.cm-s-default pre .cm-keyword {
-  cursor: context-menu !important;
-}
-
 /* custom height of line */
 .CodeMirror-code>div {
   height: 35px;
 }
 
 /* todo */
-.cm-s-default .cm-keyword {
-  padding: 1px 5px !important;
-  border: 1px solid #75A4FF;
-  border-radius: 20px;
-  color: #75A4FF !important;
-}
 
 .CodeMirror-line .f-cm-tag-selected {
   background-color: #0f67eb !important;
@@ -592,58 +578,338 @@ span.CodeMirror-selectedtext {
   color: white !important;
 }
 
-
-/* highlight formula tag */
-
-.cm-table-tag {
+/** Highlight formula tag  */
+/* table tag */
+.cm-single-table-tag {
   border: 1px solid #75A4FF;
-  padding: 3px 6px;
+  padding-top: 3px;
+  padding-bottom: 3px;
+  padding-left: 22px;
+  padding-right: 6px;
   border-radius: 25px;
-}
-
-.cm-table-dots-tag {
-  border-top: 1px solid #75A4FF;
-  border-right: 1px solid #75A4FF;
-  border-bottom: 1px solid #75A4FF;
   position: relative;
-  padding: 3px 6px;
+  color: #75A4FF;
+}
+.cm-single-table-tag::before {
+  content: 'Pr';
+  position: absolute;
+  left: 5px;
+  height: 100%;
+  top: 2px;
+  display: inline-block;
+  opacity: 1;
+  font-weight: bold;
+  font-size: 11px;
+}
+.cm-start-table-tag {
+  border: 1px solid #75A4FF;
+  padding-left: 5px;
+  border-top-left-radius: 25px;
+  border-bottom-left-radius: 25px;
+  border-right: none;
+  color: #75A4FF;
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
+.cm-start-table-tag::before {
+  content: 'Pr';
+  position: absolute;
+  left: 5px;
+  height: 100%;
+  top: -2.7px;
+  display: inline-block;
+  opacity: 1;
+  font-weight: bold;
+}
+.cm-middle-table-tag {
+  border-top: 1px solid #75A4FF;
+  border-bottom: 1px solid #75A4FF;
+  color: #75A4FF;
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
+.cm-middle-table-tag::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 1px;
+  top: -1px;
+  left: -100%;
+  background-color: #75A4FF;
+}
+.cm-middle-table-tag::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 1px;
+  bottom: -1px;
+  left: -100%;
+  background-color: #75A4FF;
+}
+.cm-end-table-tag {
+  border: 1px solid #75A4FF;
+  padding-right: 5px;
   border-top-right-radius: 25px;
   border-bottom-right-radius: 25px;
-}
-
-.cm-table-dots-tag::before {
-  content: '';
-  display: block;
-  position: absolute;
-  width: 1px;
-  height: 100%;
-  background-color: #2B2B2B;
-  top: 0;
-  left: -1px;
-}
-
-.cm-table-dots-tag ~ .cm-table-tag {
-  color:   blue !important;
-}
-
-.cm-table-dots-tag ~ span {
-  border-right: unset !important;
-}
-
-.cm-dots-tag {
-  border-top: 1px solid;
-  border-bottom: 1px solid;
-  border-right: 1px solid;
   position: relative;
+  border-left: none;
+  color: #75A4FF;
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
+.cm-end-table-tag::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 1px;
+  top: -1px;
+  left: -100%;
+  background-color: #75A4FF;
+}
+.cm-end-table-tag::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 1px;
+  bottom: -1px;
+  left: -100%;
+  background-color: #75A4FF;
+}
+/* CurrentValue tag */
+.cm-single-currentvalue-tag {
+  border: 1px solid #CA87FF;
+  padding-left: 22px;
+  padding-right: 5px;
+  border-radius: 25px;
+  position: relative;
+  color: #CA87FF;
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
+.cm-single-currentvalue-tag::before {
+  content: 'Cv';
+  position: absolute;
+  left: 5px;
+  height: 100%;
+  top: 2px;
+  display: inline-block;
+  opacity: 1;
+  font-weight: bold;
+  font-size: 11px;
+}
+.cm-start-currentvalue-tag {
+  border: 1px solid #CA87FF;
+  padding-left: 22px;
+  border-top-left-radius: 25px;
+  border-bottom-left-radius: 25px;
+  border-right: none;
+  position: relative;
+  color: #CA87FF;
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
+.cm-start-currentvalue-tag::before {
+  content: 'Cv';
+  position: absolute;
+  left: 5px;
+  height: 100%;
+  top: 2px;
+  display: inline-block;
+  opacity: 1;
+  font-weight: bold;
+  font-size: 11px;
+}
+.cm-middle-currentvalue-tag {
+  border-top: 1px solid #CA87FF;
+  border-bottom: 1px solid #CA87FF;
+  color: #CA87FF;
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
+.cm-middle-currentvalue-tag::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 1px;
+  top: -1px;
+  left: -100%;
+  background-color: #CA87FF;
+}
+.cm-middle-currentvalue-tag::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 1px;
+  bottom: -1px;
+  left: -100%;
+  background-color: #CA87FF;
+}
+.cm-end-currentvalue-tag {
+  border: 1px solid #CA87FF;
+  padding-right: 5px;
+  border-top-right-radius: 25px;
+  border-bottom-right-radius: 25px;
+  position: relative;
+  border-left: none;
+  color: #CA87FF;
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
+.cm-end-currentvalue-tag::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 1px;
+  top: -1px;
+  left: -100%;
+  background-color: #CA87FF;
+}
+.cm-end-currentvalue-tag::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 1px;
+  bottom: -1px;
+  left: -100%;
+  background-color: #CA87FF;
+}
+/* CurrentUser tag */
+.cm-single-currentuser-tag {
+  border: 1px solid #FFB571;
+  padding-left: 22px;
+  padding-right: 5px;
+  border-radius: 25px;
+  position: relative;
+  color: #FFB571;
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
+.cm-single-currentuser-tag::before {
+  content: 'Cu';
+  position: absolute;
+  left: 5px;
+  height: 100%;
+  top: 2px;
+  display: inline-block;
+  opacity: 1;
+  font-weight: bold;
+  font-size: 11px;
+}
+.cm-start-currentuser-tag {
+  border: 1px solid #FFB571;
+  padding-left: 22px;
+  border-top-left-radius: 25px;
+  border-bottom-left-radius: 25px;
+  border-right: none;
+  position: relative;
+  color: #FFB571;
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
+.cm-start-currentuser-tag::before {
+  content: 'Cu';
+  position: absolute;
+  left: 5px;
+  height: 100%;
+  top: 2px;
+  display: inline-block;
+  opacity: 1;
+  font-weight: bold;
+  font-size: 11px;
+}
+.cm-middle-currentuser-tag {
+  border-top: 1px solid #FFB571;
+  border-bottom: 1px solid #FFB571;
+  color: #FFB571;
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
+.cm-middle-currentuser-tag::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 1px;
+  top: -1px;
+  left: -100%;
+  background-color: #FFB571;
+}
+.cm-middle-currentuser-tag::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 1px;
+  bottom: -1px;
+  left: -100%;
+  background-color: #FFB571;
+}
+.cm-end-currentuser-tag {
+  border: 1px solid #FFB571;
+  padding-right: 5px;
+  border-top-right-radius: 25px;
+  border-bottom-right-radius: 25px;
+  position: relative;
+  border-left: none;
+  color: #FFB571;
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
+.cm-end-currentuser-tag::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 1px;
+  top: -1px;
+  left: -100%;
+  background-color: #FFB571;
+}
+.cm-end-currentuser-tag::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 1px;
+  bottom: -1px;
+  left: -100%;
+  background-color: #FFB571;
 }
 
-.cm-dots-tag::before {
-  content: '';
-  display: block;
-  position: absolute;
-  width: 1px;
-  height: 100%;
-  background-color: #2B2B2B;
-  top: 0;
-  left: -1px;
+.cm-dots-table-tag {
+  color: #75A4FF;
 }
+.cm-dots-currentvalue-tag {
+  color: #CA87FF;
+}
+.cm-dots-currentuser-tag {
+  color: #FFB571;
+}
+.cm-dots-placeholder-tag {
+  /* color: #75A4FF; */
+}
+.cm-dots-namespace-tag {
+  /* color: #75A4FF; */
+}
+
+.cm-single-table-tag,
+  .cm-start-table-tag,
+  .cm-middle-table-tag,
+  .cm-end-table-tag, 
+  .cm-single-currentvalue-tag,
+  .cm-start-currentvalue-tag,
+  .cm-middle-currentvalue-tag,
+  .cm-end-currentvalue-tag,
+  .cm-single-currentuser-tag,
+  .cm-start-currentuser-tag,
+  .cm-middle-currentuser-tag,
+  .cm-end-currentuser-tag,
+  .cm-single-placeholder-tag,
+  .cm-start-placeholder-tag,
+  .cm-middle-placeholder-tag,
+  .cm-end-placeholder-tag,
+  .cm-single-namespace-tag,
+  .cm-start-namespace-tag,
+  .cm-middle-namespace-tag,
+  .cm-end-namespace-tag,
+  .cm-dots-table-tag,
+  .cm-dots-currentvalue-tag,
+  .cm-dots-currentuser-tag{
+    cursor: context-menu;
+  }

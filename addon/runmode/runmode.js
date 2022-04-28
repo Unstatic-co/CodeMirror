@@ -47,7 +47,6 @@ CodeMirror.runMode = function(string, modespec, callback, options) {
         }
       }
       // Create a node with token style and append it to the callback DOM element.
-      console.log('RUN 22', content)
       if (style) {
         var sp = node.appendChild(document.createElement("span"));
         sp.className = "cm-" + style.replace(/ +/g, " cm-");

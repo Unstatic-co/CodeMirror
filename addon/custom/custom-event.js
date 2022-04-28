@@ -6,11 +6,39 @@
   else // Plain browser env
     mod(CodeMirror);
 })(function (CodeMirror) {
-import('../../src/util/browser.js').then(val => {
 
-  console.log('SSSSSSS =>', val)
-})
+  const formulaTagClass = {
+    'cm-single-table-tag': 'cm-single-table-tag',
+    'cm-start-table-tag': 'cm-start-table-tag',
+    'cm-middle-table-tag': 'cm-single-table-tag',
+    'cm-end-table-tag': 'cm-single-table-tag',
 
+    'cm-single-currentvalue-tag': 'cm-single-currentvalue-tag',
+    'cm-start-currentvalue-tag': 'cm-start-currentvalue-tag',
+    'cm-middle-currentvalue-tag': 'cm-middle-currentvalue-tag',
+    'cm-end-currentvalue-tag': 'cm-end-currentvalue-tag',
+
+    'cm-single-currentuser-tag': 'cm-single-currentuser-tag',
+    'cm-start-currentuser-tag': 'cm-start-currentuser-tag',
+    'cm-middle-currentuser-tag': 'cm-middle-currentuser-tag',
+    'cm-end-currentuser-tag': 'cm-end-currentuser-tag',
+
+    'cm-single-placeholder-tag': 'cm-single-placeholder-tag',
+    'cm-start-placeholder-tag': 'cm-start-placeholder-tag',
+    'cm-middle-placeholder-tag': 'cm-middle-placeholder-tag',
+    'cm-end-placeholder-tag': 'cm-end-placeholder-tag',
+
+    'cm-single-namepace-tag': 'cm-single-namepace-tag',
+    'cm-start-namepace-tag': 'cm-start-namepace-tag',
+    'cm-middle-namepace-tag': 'cm-middle-namepace-tag',
+    'cm-end-namepace-tag': 'cm-end-namepace-tag',
+
+    'cm-dots-table-tag': 'cm-dots-table-tag',
+    'cm-dots-currentvalue-tag': 'cm-dots-currentvalue-tag',
+    'cm-dots-currentuser-tag': 'cm-dots-currentuser-tag',
+    'cm-dots-placeholder-tag': 'cm-dots-placeholder-tag',
+    'cm-dots-namespace-tag': 'cm-dots-namespace-tag'
+  }
 
   const baseClass = {
     ['cm-keyword']: 'cm-keyword',
@@ -45,24 +73,19 @@ import('../../src/util/browser.js').then(val => {
     ['cm-invalidchar']: 'cm-invalidchar'
   }
 
-  const keyTagClass = {
-    'cm-keyword': "cm-keyword"
-  }
-
-  // CodeMirror.on(document.documentElement, 'mouseup', function () {
-  //   const elCodemirrorFocus = document.querySelector('.f-cm-focus');
-  //   if (elCodemirrorFocus) {
-  //     elCodemirrorFocus.classList.remove('f-cm-focus');
-  //   }
-  // })
-
   CodeMirror.customEvent = (cm) => {
     return cm.customEvent(cm);
   }
 
+  // CodeMirror.prototype.operation = function(action) {
+    // if (this.alreadyInOperation()) return action();
+    // this.setUpOperation();
+    // try     { return action();        }
+    // finally { this.finishOperation();  console.log('FINALY') }
+  // };
+
   CodeMirror.defineExtension('customEvent', function (cm) {
     // options = parseOptions(this, this.getCursor("start"), options);
-    console.log(22222222222, CodeMirror.keyNames)
     //* [f-state] -> store states: text preview selection | element cursors | position cursors when executing mousedown
     const state = {}
     const hintOptions = {
@@ -79,17 +102,8 @@ import('../../src/util/browser.js').then(val => {
     })
 
     cm.on('keydown', function (_cm, event) {
-      console.log('skssksksk =>', _cm);
-
-      const keyName = CodeMirror.keyName(event);
-      const extra = cm.getOption('extraKeys');
-      const cmd = (extra && extra[keyName]) || CodeMirror.keyMap[cm.getOption("keyMap")][keyName];
-      
-      const existTag = document.querySelector('.cm-tag-math');
-      if(existTag){
-        existTag.classList.remove('cm-tag-math')
-        console.log(2222222,existTag);
-          }
+      // const keyName = CodeMirror.keyName(event);
+      // const extra = cm.getOption('extraKeys');
       handleOnKeyDown(_cm, event, state);
     })
 
@@ -100,41 +114,13 @@ import('../../src/util/browser.js').then(val => {
     cm.on('change', function (_cm, data) {
       const line = _cm.doc.getCursor().line;
       const textOfLine = _cm.doc.getLine(line);
-      const el = document.querySelector('.cm-table-tag');
-      if(el){
-        el.style.color = 'red';
-        el.classList.remove('cm-table-tag')
-      }
-      console.log('ON CHANGE =>',el);
-      if(el){
-        const elNext = el.nextElementSibling
-      }
-
-      // setTimeout(() => {
-      //   const el = document.querySelector('.cm-table-tag');
-      //   el.style.color = 'red';
-      // }, );
-
-      // const htmlNode = document.createElement('span');
-      // const newContent = document.createTextNode('Hi there and greetings!');
-      // htmlNode.appendChild(newContent);
-      // _cm.addWidget({ch: 1, line: 0}, {ch: 3, line: 0}, {
-      //   replacedWith(htmlNode)
-      // })
 
       const value = _cm.getValue();
       if (!value.includes(';') && !!textOfLine) {
         _cm.showHint(hintOptions)
       }
     })
-    
-    cm.on('update', function(){
-      const el = document.querySelector('.cm-test-math');
-      if(el){
-        const elNext = el.nextElementSibling
-        console.log('ON update =>', _cm, data, el);
-      }
-    })
+
   })
 
   /**
@@ -149,26 +135,46 @@ import('../../src/util/browser.js').then(val => {
   function handleOnMousedown(cm, event, state) {
     const _element = event.target;
     if (!_element) return;
-
-    const elTagSelected = document.querySelector('.f-cm-tag-selected');
+    // const elTagSelected = document.querySelector('.f-cm-tag-selected');
     const elCursors = document.querySelector('.CodeMirror-cursors');
-    const textOfElement = _element.innerText || '';
 
-    if (elTagSelected) {
-      elTagSelected.classList.remove('f-cm-tag-selected');
-    }
+    let textOfElement = _element.innerText || '';
+    if(formulaTagClass[_element.className]){
+      let existNextClass = true;
+      let existPrevClass = true;
+      let nexCurrent = _element;
+      let prevElCurrent = _element;
+      while (true) {
+        const nextElementSibling = nexCurrent ? nexCurrent.nextElementSibling : null;
+        const prevElementSibling = prevElCurrent ? prevElCurrent.previousElementSibling : null;
+        if(nextElementSibling){
+          const nextClass = nextElementSibling.className;
+          if(formulaTagClass[nextClass] && nextClass){
+            // textOfElement = textOfElement + '.' + nextElementSibling.innerText;
+            textOfElement = textOfElement + nextElementSibling.innerText;
+          }else existNextClass = false;
+        }else existNextClass = false;
 
-    // if (baseClass[_element.className]) {
-    //   _element.classList.add('f-cm-tag-selected');
-    //   elCursors.style.display = 'none';
-    // } else elCursors.style.display = 'unset';
-
-    if (keyTagClass[_element.className]) {
+        if(prevElementSibling){
+          const prevClass = prevElementSibling.className;
+          if(formulaTagClass[prevClass] && existPrevClass){
+            // textOfElement = prevElementSibling.innerText + '.' + textOfElement;
+            textOfElement = prevElementSibling.innerText + textOfElement;
+          }else existPrevClass = false;
+        }else existPrevClass = false
+        
+        if((!existNextClass && !existPrevClass) ){
+          break
+        }
+        nexCurrent = nextElementSibling;
+        prevElCurrent = prevElementSibling;
+      }
       state['textPrevSelection'] = textOfElement;
-      _element.classList.add('f-cm-tag-selected');
+      // _element.classList.add('f-cm-tag-selected');
       elCursors.style.display = 'none';
-    } else elCursors.style.display = 'unset';
+    }else elCursors.style.display = 'unset';
 
+    
     state['mousedownCursors'] = cm.getDoc().getCursor();
     state['elCursors'] = elCursors;
   }
@@ -191,19 +197,22 @@ import('../../src/util/browser.js').then(val => {
 
       // const isConditionPass = event.key === CHAR_BACKSPACE || event.which === CODE_BACKSPACE || event.which === CODE_DEL;
 
-
     if (keyName === 'Backspace' || keyName === 'Delete') {
       const _somethingSelected = cm.somethingSelected();
-      const _textPrevSelection = state.textPrevSelection;
-      const hadWhiteSpaces = _textPrevSelection?.match(/\s+/g);
-      const hadDots = _textPrevSelection?.match(/\./g);
+      let _textPrevSelection = state.textPrevSelection;
+      // const hadWhiteSpaces = _textPrevSelection?.match(/\s+/g);
+      // const hadDots = _textPrevSelection?.match(/\./g);
       // const wordsWithoutDots = _textPrevSelection.match(/(^|\s)([^\s\.]+)($|\s)/g);
-      if (_somethingSelected || hadWhiteSpaces || hadDots || !!!_textPrevSelection) return;
-
+      if (_somethingSelected || !!!_textPrevSelection || hadWhiteSpaces) return;
+      const _textPrevSelectionArr = _textPrevSelection.split('.')
+      
+      if(_textPrevSelectionArr.length === 2 && !!!_textPrevSelectionArr[1]){
+        _textPrevSelection = _textPrevSelection.replace(/\./g,'');
+      }
       const _doc = cm.getDoc(),
         line = _doc.getCursor().line,
         ch = _doc.getCursor().ch,
-        length = state.textPrevSelection.length,
+        length = _textPrevSelection.length,
         n = length === 1 ? 1 : length === 2 ? 2 : 3,
         subText = _doc.getLine(line).substr(Math.max(ch - n, 0), n),
         indexOfSubText = state.textPrevSelection.indexOf(subText),
@@ -222,9 +231,12 @@ import('../../src/util/browser.js').then(val => {
 
       _doc.setSelection(anchor, head);
     }
+
+
     if(event.which === CODE_SEMI_COLON){
       state['hadSemiColon'] = true;
     }
+
   }
 
   function handleDblclick(cm, event, state) {
