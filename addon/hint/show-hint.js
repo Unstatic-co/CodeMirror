@@ -243,17 +243,83 @@
     var completions = data.list;
     for (var i = 0; i < completions.length; ++i) {
       var elt = hints.appendChild(ownerDocument.createElement("li")), cur = completions[i];
+      // [Ntank]
+      const eltDocumentHint = ownerDocument.createElement('div');
+      const elSubDescription = ownerDocument.createElement('div');
+
       var className = HINT_ELEMENT_CLASS + (i != this.selectedHint ? "" : " " + ACTIVE_HINT_ELEMENT_CLASS);
       if (cur.className != null) className = cur.className + " " + className;
       elt.className = className;
       if (i == this.selectedHint) elt.setAttribute("aria-selected", "true")
       elt.id = this.id + "-" + i
       elt.setAttribute("role", "option")
-      if (cur.render) cur.render(elt, data, cur);
-      else elt.appendChild(ownerDocument.createTextNode(cur.displayText || getText(cur)));
-      elt.hintId = i;
-    }
+      if (cur.render) {
+        cur.render(elt, data, cur);
+        elt.classList.add('codemirror-hint--icon');
+      } else {
+        elt.appendChild(ownerDocument.createTextNode(cur.displayText || getText(cur)));
+      }
 
+      elt.hintId = i;
+      
+      // [Ntank] show document hint
+      if(eltDocumentHint){
+        const eltTextHint = ownerDocument.createElement('p');
+        const textHint = ownerDocument.createTextNode(`${cur.displayText || getText(cur)} document here...`);
+        eltDocumentHint.classList.add('doc-hint')
+        eltTextHint.appendChild(textHint);
+        eltDocumentHint.appendChild(eltTextHint);
+        elt.appendChild(eltDocumentHint);
+      }
+
+      
+      // create sub description
+      if(elSubDescription){
+        elSubDescription.classList.add('sub-description-hint');
+        elSubDescription.appendChild(ownerDocument.createTextNode(`type`));
+        elt.appendChild(elSubDescription);
+      }
+
+      // const kind = cur.item.kind;
+
+      // console.log('kind')
+
+      elt.addEventListener('mouseenter', function(e){
+        // todo
+        const _elt = e.target;
+        const _eltDocumentHint = _elt.children[0];
+        const eltRect = _elt.getBoundingClientRect();
+        const hintsRect = hints.getBoundingClientRect();
+        const SPACE = 2;
+
+        _eltDocumentHint.setAttribute('style', `
+          top: ${hintsRect.y}px;
+          left: ${hintsRect.width + hintsRect.x + SPACE}px;
+          opacity: 1;
+          visibility: visible;
+        `)
+        
+      })
+
+      elt.addEventListener('mouseleave', function(e){
+        // todo
+        const _elt = e.target;
+        const _eltDocumentHint = _elt.children[0];
+        const eltRect = _elt.getBoundingClientRect();
+        const hintsRect = hints.getBoundingClientRect();
+        const SPACE = 2;
+
+        _eltDocumentHint.setAttribute('style', `
+          top: ${hintsRect.y}px;
+          left: ${hintsRect.width + hintsRect.x + SPACE}px;
+          opacity: 0;
+          visibility: hidden;
+        `)
+
+      })
+      // custom
+    }
+    
     var container = completion.options.container || ownerDocument.body;
     var pos = cm.cursorCoords(completion.options.alignWithWord ? data.from : null);
     var left = pos.left, top = pos.bottom, below = true;
@@ -269,6 +335,10 @@
     }
     hints.style.left = (left - offsetLeft) + "px";
     hints.style.top = (top - offsetTop) + "px";
+
+    // [Ntank]
+    // const widthElement = hints.offsetWidth
+
 
     // If we're at the edge of the screen, then we want the menu to appear on the left of the cursor.
     var winW = parentWindow.innerWidth || Math.max(ownerDocument.body.offsetWidth, ownerDocument.documentElement.offsetWidth);

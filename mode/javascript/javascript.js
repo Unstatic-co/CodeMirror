@@ -33,17 +33,32 @@
       key: 'currentvalue',
       type: 'currentvalue',
       properties: {
-        Date: 'date',
-        Discount: 'discount',
-        Name: 'Name',
-        Price: 'Price',
+        Date: {
+          key: 'date',
+          type: 'string'
+        },
+        Discount: {
+          key: 'discount',
+          type: 'number'
+        },
+        Name: {
+          key: 'Name',
+          type: 'string'
+        },
+        Price: {
+          key: 'Price',
+          type: 'number'
+        }
       }
     },
     CurrentUser: {
       key: 'currentuser',
       type: 'currentuser',
       properties: {
-        Name: 'Name'
+        Name: {
+          key: 'Name',
+          type: 'string'
+        }
       }
     },
     predicate: {
@@ -51,10 +66,9 @@
       type: 'placeholder',
       properties: null
     }
-    
   }
 
-let formulaTagCurrent = null
+  let formulaTagCurrent = null;
 
 CodeMirror.defineMode("javascript", function(config, parserConfig) {
   var indentUnit = config.indentUnit;
@@ -128,7 +142,7 @@ CodeMirror.defineMode("javascript", function(config, parserConfig) {
         const _class = `dots-${formulaTagCurrent.type}-tag`
         return ret(_class, _class, word);
       }
-      // formulaTagCurrent = null;
+      formulaTagCurrent = null;
       return ret(ch)
     } else if (ch == "=" && stream.eat(">")) {
       formulaTagCurrent = null;
@@ -168,14 +182,15 @@ CodeMirror.defineMode("javascript", function(config, parserConfig) {
       formulaTagCurrent = null;
       return ret("meta", "meta");
     } else if (ch == "#" && stream.eatWhile(wordRE)) {
-      // formulaTagCurrent = null;
+      formulaTagCurrent = null;
       return ret("variable", "property")
     } else if (ch == "<" && stream.match("!--") ||
                (ch == "-" && stream.match("->") && !/\S/.test(stream.string.slice(0, stream.start)))) {
       stream.skipToEnd()
-      // formulaTagCurrent = null;
+      formulaTagCurrent = null;
       return ret("comment", "comment")
     } else if (isOperatorChar.test(ch)) {
+      formulaTagCurrent = null;
       if (ch != ">" || !state.lexical || state.lexical.type != ">") {
         if (stream.eat("=")) {
           if (ch == "!" || ch == "=") stream.eat("=")
@@ -192,8 +207,8 @@ CodeMirror.defineMode("javascript", function(config, parserConfig) {
       var word = stream.current()
       if (state.lastType != ".") {
         if (keywords.propertyIsEnumerable(word)) {
-          var kw = keywords[word]
           formulaTagCurrent = null;
+          var kw = keywords[word]
           return ret(kw.type, kw.style, word)
         }
         if (word == "async" && stream.match(/^(\s|\/\*([^*]|\*(?!\/))*?\*\/)*[\[\(\w]/, false)){
@@ -206,12 +221,14 @@ CodeMirror.defineMode("javascript", function(config, parserConfig) {
       const stringOfLine = stream.string;
       if(formulaTags[word]){
         formulaTagCurrent = formulaTags[word];
-        const indexWord= stringOfLine.indexOf(word);
+        // const indexWord= stringOfLine.indexOf(word);
         const nextText = findTextSibling(word, stringOfLine, stream.start);
         const _isPropertyTag = isPropertyTag(nextText, formulaTagCurrent);
         const tagType = formulaTags[word].type;
         if(_isPropertyTag){
-          return ret(`start-${tagType}-tag`, `start-${tagType}-tag`, word);
+          const propertyType = formulaTagCurrent.properties[nextText].type;
+          return ret(`start-${tagType}-tag--${propertyType}`, `start-${tagType}-tag--${propertyType}`, word);
+          // return ret(`start-${tagType}-tag`, `start-${tagType}-tag`, word);
         } 
         return ret(`single-${tagType}-tag`, `single-${tagType}-tag`, word);
 
@@ -234,7 +251,7 @@ CodeMirror.defineMode("javascript", function(config, parserConfig) {
         }
       }
       formulaTagCurrent = null;
-      
+
       return ret("variable", "variable", word)
     }
   }
@@ -978,8 +995,9 @@ CodeMirror.defineMode("javascript", function(config, parserConfig) {
     const shortStringOfLine = stringOfLine.slice(indexWord, 100 + indexWord);
     
     // const shortStringOfLineReplace = shortStringOfLine.replace(/\(/g,'.').replace(/\)/g,'.');
-    const shortStringOfLineReplace = shortStringOfLine.replace(/\(/g,'.').replace(/\)/g,'.').replace(/\=/g,'.');
-    const stringList = shortStringOfLineReplace.trim().split('.');
+    // const shortStringOfLineReplace = shortStringOfLine.replace(/\(/g,'.').replace(/\)/g,'.').replace(/\=/g,'.').replace(/\>/g,'.');
+    const shortStringOfLineReplace = shortStringOfLine.replace(/\{|\}|#|_|=|<|>|\?|\,|\:|\"|\'|\~|\ |\(|\)/g,'.').trim();
+    const stringList = shortStringOfLineReplace.split('.');
     return stringList[1] || '';
   }
 

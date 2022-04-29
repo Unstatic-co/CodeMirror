@@ -37,52 +37,61 @@
     'cm-dots-currentvalue-tag': 'cm-dots-currentvalue-tag',
     'cm-dots-currentuser-tag': 'cm-dots-currentuser-tag',
     'cm-dots-placeholder-tag': 'cm-dots-placeholder-tag',
-    'cm-dots-namespace-tag': 'cm-dots-namespace-tag'
+    'cm-dots-namespace-tag': 'cm-dots-namespace-tag',
+
+    'cm-start-table-tag--string': 'cm-start-table-tag--string',
+    'cm-start-table-tag--number': 'cm-single-table-tag--number',
+    'cm-start-table-tag--boolean': 'cm-single-table-tag--boolean',
+    'cm-start-table-tag--date': 'cm-single-table-tag--date',
+
+    'cm-start-currentvalue-tag--string': 'cm-start-currentvalue-tag--string',
+    'cm-middle-currentvalue-tag--number': 'cm-single-currentvalue-tag--number',
+    'cm-end-currentvalue-tag--boolean': 'cm-single-currentvalue-tag--boolean',
+    'cm-end-currentvalue-tag--date': 'cm-single-currentvalue-tag--date',
+
+    'cm-start-currentuser-tag--string': 'cm-start-currentuser-tag--string',
+    'cm-middle-currentuser-tag--number': 'cm-single-currentuser-tag--number',
+    'cm-end-currentuser-tag--boolean': 'cm-single-currentuser-tag--boolean',
+    'cm-end-currentuser-tag--date': 'cm-single-currentuser-tag--date',
   }
 
-  const baseClass = {
-    ['cm-keyword']: 'cm-keyword',
-    ['cm-def']: 'cm-def',
-    ['cm-operator']: 'cm-operator',
-    ['cm-property']: 'cm-property',
-    ['cm-number']: 'cm-number',
-    ['cm-string']: 'cm-string',
-    ['cm-variable']: 'cm-variable',
-    ['cm-variable-2']: 'cm-variable-2',
-    ['cm-type']: 'cm-type',
-    ['cm-atom']: 'cm-atom',
-    ['cm-punctuation']: 'cm-punctuation',
-    ['cm-comment']: 'cm-comment',
-    ['cm-string-2']: 'cm-string-2',
-    ['cm-meta']: 'cm-meta',
-    ['cm-qualifier']: 'cm-qualifier',
-    ['cm-builtin']: 'cm-builtin',
-    ['cm-bracket']: 'cm-bracket',
-    ['cm-tag']: 'cm-tag',
-    ['cm-attribute']: 'cm-attribute',
-    ['cm-hr']: 'cm-hr',
-    ['cm-link']: 'cm-link',
-    ['cm-error']: 'cm-error',
-    ['cm-header']: 'cm-header',
-    ['cm-quote']: 'cm-quote',
-    ['cm-strikethrough']: 'cm-strikethrough',
-    ['cm-positive']: 'cm-positive',
-    ['cm-negative']: 'cm-negative',
-    ['cm-strong']: 'cm-strong',
-    ['cm-em']: 'cm-em',
-    ['cm-invalidchar']: 'cm-invalidchar'
-  }
+  // const baseClass = {
+  //   ['cm-keyword']: 'cm-keyword',
+  //   ['cm-def']: 'cm-def',
+  //   ['cm-operator']: 'cm-operator',
+  //   ['cm-property']: 'cm-property',
+  //   ['cm-number']: 'cm-number',
+  //   ['cm-string']: 'cm-string',
+  //   ['cm-variable']: 'cm-variable',
+  //   ['cm-variable-2']: 'cm-variable-2',
+  //   ['cm-type']: 'cm-type',
+  //   ['cm-atom']: 'cm-atom',
+  //   ['cm-punctuation']: 'cm-punctuation',
+  //   ['cm-comment']: 'cm-comment',
+  //   ['cm-string-2']: 'cm-string-2',
+  //   ['cm-meta']: 'cm-meta',
+  //   ['cm-qualifier']: 'cm-qualifier',
+  //   ['cm-builtin']: 'cm-builtin',
+  //   ['cm-bracket']: 'cm-bracket',
+  //   ['cm-tag']: 'cm-tag',
+  //   ['cm-attribute']: 'cm-attribute',
+  //   ['cm-hr']: 'cm-hr',
+  //   ['cm-link']: 'cm-link',
+  //   ['cm-error']: 'cm-error',
+  //   ['cm-header']: 'cm-header',
+  //   ['cm-quote']: 'cm-quote',
+  //   ['cm-strikethrough']: 'cm-strikethrough',
+  //   ['cm-positive']: 'cm-positive',
+  //   ['cm-negative']: 'cm-negative',
+  //   ['cm-strong']: 'cm-strong',
+  //   ['cm-em']: 'cm-em',
+  //   ['cm-invalidchar']: 'cm-invalidchar'
+  // }
+
 
   CodeMirror.customEvent = (cm) => {
     return cm.customEvent(cm);
   }
-
-  // CodeMirror.prototype.operation = function(action) {
-    // if (this.alreadyInOperation()) return action();
-    // this.setUpOperation();
-    // try     { return action();        }
-    // finally { this.finishOperation();  console.log('FINALY') }
-  // };
 
   CodeMirror.defineExtension('customEvent', function (cm) {
     // options = parseOptions(this, this.getCursor("start"), options);
@@ -111,15 +120,15 @@
       handleDblclick(cm, event, state)
     })
 
-    // cm.on('change', function (_cm, data) {
-    //   const line = _cm.doc.getCursor().line;
-    //   const textOfLine = _cm.doc.getLine(line);
+    cm.on('change', function (_cm, data) {
+      const line = _cm.doc.getCursor().line;
+      const textOfLine = _cm.doc.getLine(line);
 
-    //   const value = _cm.getValue();
-    //   if (!value.includes(';') && !!textOfLine) {
-    //     _cm.showHint(hintOptions)
-    //   }
-    // })
+      const value = _cm.getValue();
+      if (!value.includes(';') && !!textOfLine) {
+        _cm.showHint(hintOptions)
+      }
+    })
 
   })
 
@@ -139,42 +148,55 @@
     const elCursors = document.querySelector('.CodeMirror-cursors');
 
     let textOfElement = _element.innerText || '';
-    if(formulaTagClass[_element.className]){
-      let existNextClass = true;
-      let existPrevClass = true;
-      let nexCurrent = _element;
-      let prevElCurrent = _element;
+    if (formulaTagClass[_element.className]) {
+      let existNextClass = true,
+        existPrevClass = true,
+        nexCurrent = _element,
+        prevElCurrent = _element;
+
       while (true) {
         const nextElementSibling = nexCurrent ? nexCurrent.nextElementSibling : null;
         const prevElementSibling = prevElCurrent ? prevElCurrent.previousElementSibling : null;
-        if(nextElementSibling){
+        if (nextElementSibling) {
           const nextClass = nextElementSibling.className;
-          if(formulaTagClass[nextClass] && nextClass){
+          if (formulaTagClass[nextClass] && nextClass) {
             // textOfElement = textOfElement + '.' + nextElementSibling.innerText;
             textOfElement = textOfElement + nextElementSibling.innerText;
-          }else existNextClass = false;
-        }else existNextClass = false;
+          } else existNextClass = false;
+        } else existNextClass = false;
 
-        if(prevElementSibling){
+        if (prevElementSibling) {
           const prevClass = prevElementSibling.className;
-          if(formulaTagClass[prevClass] && existPrevClass){
+          if (formulaTagClass[prevClass] && existPrevClass) {
             // textOfElement = prevElementSibling.innerText + '.' + textOfElement;
             textOfElement = prevElementSibling.innerText + textOfElement;
-          }else existPrevClass = false;
-        }else existPrevClass = false
-        
-        if((!existNextClass && !existPrevClass) ){
+          } else existPrevClass = false;
+        } else existPrevClass = false
+
+        if ((!existNextClass && !existPrevClass)) {
           break
         }
         nexCurrent = nextElementSibling;
         prevElCurrent = prevElementSibling;
       }
-      state['textPrevSelection'] = textOfElement;
-      // _element.classList.add('f-cm-tag-selected');
-      elCursors.style.display = 'none';
-    }else elCursors.style.display = 'unset';
 
-    
+      state['textPrevSelection'] = textOfElement;
+      elCursors.style.display = 'none';
+    } else {
+      // const textOfLine = _element.innerText,
+        // textOfLineArr = textOfLine.split('.'),
+        // textFirstOfLine = textOfLineArr[0];
+        // const elRect = _element.getBoundingClientRect()
+        // const offsetX = event.clientX || event.pageX;
+        // const ELEMENT_PADDING = 4;
+
+        // todo
+        // const isHiddenCursors = (offsetX <= (elRect.x + ELEMENT_PADDING)) && (_element.className.includes('CodeMirror-linenumber') || _element.className.includes('CodeMirror-gutters'));
+        // isHiddenCursors ? elCursors.style.display = 'none' : elCursors.style.display = 'unset';
+      elCursors.style.display = 'unset';
+      state['textPrevSelection'] = null;
+    };
+
     state['mousedownCursors'] = cm.getDoc().getCursor();
     state['elCursors'] = elCursors;
   }
@@ -189,13 +211,10 @@
    * @returns () => void
    */
   function handleOnKeyDown(cm, event, state) {
-    const CHAR_BACKSPACE = 'Backspace',
-      CODE_BACKSPACE = 8,
-      CODE_DEL = 46,
-      CODE_SEMI_COLON = 186,
+    const CODE_SEMI_COLON = 186,
       keyName = CodeMirror.keyName(event);
 
-      // const isConditionPass = event.key === CHAR_BACKSPACE || event.which === CODE_BACKSPACE || event.which === CODE_DEL;
+    // const isConditionPass = event.key === CHAR_BACKSPACE || event.which === CODE_BACKSPACE || event.which === CODE_DEL;
 
     if (keyName === 'Backspace' || keyName === 'Delete') {
       const _somethingSelected = cm.somethingSelected();
@@ -205,10 +224,11 @@
       // const wordsWithoutDots = _textPrevSelection.match(/(^|\s)([^\s\.]+)($|\s)/g);
       if (_somethingSelected || !!!_textPrevSelection || hadWhiteSpaces) return;
       const _textPrevSelectionArr = _textPrevSelection.split('.')
-      
-      if(_textPrevSelectionArr.length === 2 && !!!_textPrevSelectionArr[1]){
-        _textPrevSelection = _textPrevSelection.replace(/\./g,'');
+
+      if (_textPrevSelectionArr.length === 2 && !!!_textPrevSelectionArr[1]) {
+        _textPrevSelection = _textPrevSelection.replace(/\./g, '');
       }
+
       const _doc = cm.getDoc(),
         line = _doc.getCursor().line,
         ch = _doc.getCursor().ch,
@@ -233,25 +253,28 @@
     }
 
 
-    if(event.which === CODE_SEMI_COLON){
+    if (event.which === CODE_SEMI_COLON) {
       state['hadSemiColon'] = true;
     }
 
   }
 
   function handleDblclick(cm, event, state) {
-    const elCodemirror = document.querySelector('.CodeMirror');
-    if (elCodemirror) elCodemirror.classList.add('f-cm-focus');
-    const elCursors = state.elCursors;
-    const cursors = state.mousedownCursors
-
-    cm.doc.setSelection(cursors, cursors);
-    if (elCursors) {
-      editor.focus();
-      editor.setCursor(cursors)
-      elCursors.style.display = 'unset'
+    const className = event.target.className;
+    if (formulaTagClass[className]) {
+      const elCodemirror = document.querySelector('.CodeMirror');
+      if (elCodemirror) elCodemirror.classList.add('f-cm-focus');
+      const elCursors = state.elCursors;
+      const cursors = state.mousedownCursors
+      cm.doc.setSelection(cursors, cursors);
+      if (elCursors) {
+        cm.focus();
+        cm.setCursor(cursors)
+        elCursors.style.display = 'unset'
+      }
+      state['textPrevSelection'] = '';
     }
-    state['textPrevSelection'] = '';
+
   }
 
   // CodeMirror.defineOption('customEvent', {

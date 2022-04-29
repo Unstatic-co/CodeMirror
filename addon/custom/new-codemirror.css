@@ -1,5 +1,4 @@
 /* BASICS */
-
 .CodeMirror {
   /* Set height, width, borders, and global font properties here */
   font-family: monospace;
@@ -573,6 +572,11 @@ span.CodeMirror-selectedtext {
 
 /* todo */
 
+.CodeMirror-line span {
+  font-size: 12px;
+  font-weight: 500;
+}
+
 .CodeMirror-line .f-cm-tag-selected {
   background-color: #0f67eb !important;
   border: 1px solid #0f67eb !important;
@@ -592,17 +596,7 @@ span.CodeMirror-selectedtext {
   position: relative;
   color: #75A4FF;
 }
-.cm-single-table-tag::before {
-  content: 'Pr';
-  position: absolute;
-  left: 5px;
-  height: 100%;
-  top: 2px;
-  display: inline-block;
-  opacity: 1;
-  font-weight: bold;
-  font-size: 11px;
-}
+
 .cm-start-table-tag {
   border: 1px solid #75A4FF;
   padding-left: 5px;
@@ -613,17 +607,8 @@ span.CodeMirror-selectedtext {
   padding-top: 3px;
   padding-bottom: 3px;
 }
-.cm-start-table-tag::before {
-  content: 'Pr';
-  position: absolute;
-  left: 5px;
-  height: 100%;
-  top: -2.7px;
-  display: inline-block;
-  opacity: 1;
-  font-weight: bold;
-}
 .cm-middle-table-tag {
+  position: relative;
   border-top: 1px solid #75A4FF;
   border-bottom: 1px solid #75A4FF;
   color: #75A4FF;
@@ -688,18 +673,12 @@ span.CodeMirror-selectedtext {
   padding-top: 3px;
   padding-bottom: 3px;
 }
-.cm-single-currentvalue-tag::before {
-  content: 'Cv';
-  position: absolute;
-  left: 5px;
-  height: 100%;
-  top: 2px;
-  display: inline-block;
-  opacity: 1;
-  font-weight: bold;
-  font-size: 11px;
-}
-.cm-start-currentvalue-tag {
+
+.cm-start-currentvalue-tag,
+.cm-start-currentvalue-tag--string,
+.cm-start-currentvalue-tag--number,
+.cm-start-currentvalue-tag--boolean,
+.cm-start-currentvalue-tag--date {
   border: 1px solid #CA87FF;
   padding-left: 22px;
   border-top-left-radius: 25px;
@@ -710,25 +689,23 @@ span.CodeMirror-selectedtext {
   padding-top: 3px;
   padding-bottom: 3px;
 }
-.cm-start-currentvalue-tag::before {
-  content: 'Cv';
-  position: absolute;
-  left: 5px;
-  height: 100%;
-  top: 2px;
-  display: inline-block;
-  opacity: 1;
-  font-weight: bold;
-  font-size: 11px;
-}
-.cm-middle-currentvalue-tag {
+.cm-middle-currentvalue-tag,
+.cm-middle-currentvalue-tag--string,
+.cm-middle-currentvalue-tag--number,
+.cm-middle-currentvalue-tag--boolean,
+.cm-middle-currentvalue-tag--date {
+  position: relative;
   border-top: 1px solid #CA87FF;
   border-bottom: 1px solid #CA87FF;
   color: #CA87FF;
   padding-top: 3px;
   padding-bottom: 3px;
 }
-.cm-middle-currentvalue-tag::before {
+.cm-middle-currentvalue-tag::before,
+.cm-middle-currentvalue-tag--string::before,
+.cm-middle-currentvalue-tag--number::before,
+.cm-middle-currentvalue-tag--boolean::before,
+.cm-middle-currentvalue-tag--date::before {
   content: '';
   position: absolute;
   width: 100%;
@@ -737,7 +714,11 @@ span.CodeMirror-selectedtext {
   left: -100%;
   background-color: #CA87FF;
 }
-.cm-middle-currentvalue-tag::after {
+.cm-middle-currentvalue-tag::after,
+.cm-middle-currentvalue-tag--string::after,
+.cm-middle-currentvalue-tag--number::after,
+.cm-middle-currentvalue-tag--boolean::after,
+.cm-middle-currentvalue-tag--date::after {
   content: '';
   position: absolute;
   width: 100%;
@@ -746,7 +727,11 @@ span.CodeMirror-selectedtext {
   left: -100%;
   background-color: #CA87FF;
 }
-.cm-end-currentvalue-tag {
+.cm-end-currentvalue-tag,
+.cm-end-currentvalue-tag--string,
+.cm-end-currentvalue-tag--number,
+.cm-end-currentvalue-tag--boolean,
+.cm-end-currentvalue-tag--date {
   border: 1px solid #CA87FF;
   padding-right: 5px;
   border-top-right-radius: 25px;
@@ -757,7 +742,11 @@ span.CodeMirror-selectedtext {
   padding-top: 3px;
   padding-bottom: 3px;
 }
-.cm-end-currentvalue-tag::before {
+.cm-end-currentvalue-tag::before,
+.cm-end-currentvalue-tag--string::before,
+.cm-end-currentvalue-tag--number::before,
+.cm-end-currentvalue-tag--boolean::before,
+.cm-end-currentvalue-tag--date::before {
   content: '';
   position: absolute;
   width: 100%;
@@ -766,7 +755,11 @@ span.CodeMirror-selectedtext {
   left: -100%;
   background-color: #CA87FF;
 }
-.cm-end-currentvalue-tag::after {
+.cm-end-currentvalue-tag::after,
+.cm-end-currentvalue-tag--string::after,
+.cm-end-currentvalue-tag--number::after,
+.cm-end-currentvalue-tag--boolean::after,
+.cm-end-currentvalue-tag--date::after {
   content: '';
   position: absolute;
   width: 100%;
@@ -786,18 +779,12 @@ span.CodeMirror-selectedtext {
   padding-top: 3px;
   padding-bottom: 3px;
 }
-.cm-single-currentuser-tag::before {
-  content: 'Cu';
-  position: absolute;
-  left: 5px;
-  height: 100%;
-  top: 2px;
-  display: inline-block;
-  opacity: 1;
-  font-weight: bold;
-  font-size: 11px;
-}
-.cm-start-currentuser-tag {
+
+.cm-start-currentuser-tag,
+.cm-start-currentuser-tag--string,
+.cm-start-currentuser-tag--number,
+.cm-start-currentuser-tag--boolean,
+.cm-start-currentuser-tag--date {
   border: 1px solid #FFB571;
   padding-left: 22px;
   border-top-left-radius: 25px;
@@ -808,18 +795,8 @@ span.CodeMirror-selectedtext {
   padding-top: 3px;
   padding-bottom: 3px;
 }
-.cm-start-currentuser-tag::before {
-  content: 'Cu';
-  position: absolute;
-  left: 5px;
-  height: 100%;
-  top: 2px;
-  display: inline-block;
-  opacity: 1;
-  font-weight: bold;
-  font-size: 11px;
-}
 .cm-middle-currentuser-tag {
+  position: relative;
   border-top: 1px solid #FFB571;
   border-bottom: 1px solid #FFB571;
   color: #FFB571;
@@ -882,6 +859,7 @@ span.CodeMirror-selectedtext {
   padding-left: 22px;
   padding-right: 12px;
   position: relative;
+  text-decoration: unset !important;
 }
 
 .cm-single-placeholder-tag::before {
@@ -896,13 +874,142 @@ span.CodeMirror-selectedtext {
   font-size: 11px;
 }
 
-.cm-dots-table-tag {
+/* style icon */
+.cm-single-table-tag::before,
+.cm-start-table-tag::before,
+.cm-start-table-tag--string::before,
+.cm-start-table-tag--number::before,
+.cm-start-table-tag--boolean::before,
+.cm-start-table-tag--date::before {
+  content: '';
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  top: 50%;
+  left: 5px;
+  display: inline-block;
+  opacity: 1;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  transform: translateY(-50%);
+
+  -webkit-mask-size: cover;
+  mask-size: cover;
+  background-color: #75A4FF;
+}
+
+.cm-single-currentvalue-tag::before,
+.cm-start-currentvalue-tag::before,
+.cm-start-currentvalue-tag--string::before,
+.cm-start-currentvalue-tag--number::before,
+.cm-start-currentvalue-tag--boolean::before,
+.cm-start-currentvalue-tag--date::before {
+  content: '';
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  top: 50%;
+  left: 5px;
+  display: inline-block;
+  opacity: 1;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  transform: translateY(-50%);
+
+  -webkit-mask-size: cover;
+  mask-size: cover;
+  background-color: #CA87FF;
+}
+
+.cm-single-currentuser-tag::before,
+.cm-start-currentuser-tag::before,
+.cm-start-currentuser-tag--string::before,
+.cm-start-currentuser-tag--number::before,
+.cm-start-currentuser-tag--boolean::before,
+.cm-start-currentuser-tag--date::before {
+  content: '';
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  top: 50%;
+  left: 5px;
+  display: inline-block;
+  opacity: 1;
+  background-position: center;
+  background-size: cover;
+  transform: translateY(-50%);
+
+  -webkit-mask-size: cover;
+  mask-size: cover;
+  background-color: #FFB571;
+}
+
+.cm-single-table-tag::before, .cm-start-table-tag::before {
+  -webkit-mask: url('./icons/ic-current-value-tag-type.svg');
+  mask: url('./icons/ic-current-value-tag-type.svg');
+}
+
+.cm-single-currentvalue-tag::before, .cm-start-currentvalue-tag::before {
+  -webkit-mask: url('./icons/ic-current-value-tag-type.svg');
+  mask: url('./icons/ic-current-value-tag-type.svg');
+}
+
+.cm-single-currentuser-tag::before, .cm-start-currentuser-tag::before {
+  -webkit-mask: url('./icons/ic-current-user-tag-type.svg');
+  mask: url('./icons/ic-current-user-tag-type.svg');
+}
+
+.cm-start-table-tag--string::before,
+.cm-start-currentvalue-tag--string::before,
+.cm-start-currentuser-tag--string::before {
+  -webkit-mask: url('./icons/ic-string-tag-type.svg');
+  mask: url('./icons/ic-string-tag-type.svg');
+}
+.cm-start-table-tag--number::before,
+.cm-start-currentvalue-tag--number::before,
+.cm-start-currentuser-tag--number::before {
+  -webkit-mask: url('./icons/ic-number-tag-type.svg');
+  mask: url('./icons/ic-number-tag-type.svg');
+}
+
+
+/* style dots */
+.cm-start-table-tag ~ .cm-dots-table-tag, 
+.cm-middle-table-tag ~ .cm-dots-table-tag,
+.cm-start-table-tag--string ~ .cm-dots-table-tag,
+.cm-middle-table-tag--string ~ .cm-dots-table-tag,
+.cm-start-table-tag--number ~ .cm-dots-table-tag,
+.cm-middle-table-tag--number ~ .cm-dots-table-tag,
+.cm-start-table-tag--boolean ~ .cm-dots-table-tag,
+.cm-middle-table-tag--boolean ~ .cm-dots-table-tag,
+.cm-start-table-tag--date ~ .cm-dots-table-tag,
+.cm-middle-table-tag--date ~ .cm-dots-table-tag {
   color: #75A4FF;
 }
-.cm-dots-currentvalue-tag {
+.cm-start-currentvalue-tag ~ .cm-dots-currentvalue-tag,
+.cm-middle-currentvalue-tag ~ .cm-dots-currentvalue-tag,
+.cm-start-currentvalue-tag--string ~ .cm-dots-currentvalue-tag,
+.cm-middle-currentvalue-tag--string ~ .cm-dots-currentvalue-tag,
+.cm-start-currentvalue-tag--number ~ .cm-dots-currentvalue-tag,
+.cm-middle-currentvalue-tag--number ~ .cm-dots-currentvalue-tag,
+.cm-start-currentvalue-tag--boolean ~ .cm-dots-currentvalue-tag,
+.cm-middle-currentvalue-tag--boolean ~ .cm-dots-currentvalue-tag,
+.cm-start-currentvalue-tag--date ~ .cm-dots-currentvalue-tag,
+.cm-middle-currentvalue-tag--date ~ .cm-dots-currentvalue-tag {
   color: #CA87FF;
 }
-.cm-dots-currentuser-tag {
+.cm-start-currentuser-tag ~ .cm-dots-currentuser-tag,
+.cm-middle-currentuser-tag ~ .cm-dots-currentuser-tag,
+.cm-start-currentuser-tag--string ~ .cm-dots-currentuser-tag,
+.cm-middle-currentuser-tag--string ~ .cm-dots-currentuser-tag,
+.cm-start-currentuser-tag--number ~ .cm-dots-currentuser-tag,
+.cm-middle-currentuser-tag--number ~ .cm-dots-currentuser-tag,
+.cm-start-currentuser-tag--boolean ~ .cm-dots-currentuser-tag,
+.cm-middle-currentuser-tag--boolean ~ .cm-dots-currentuser-tag,
+.cm-start-currentuser-tag--date ~ .cm-dots-currentuser-tag,
+.cm-middle-currentuser-tag--date ~ .cm-dots-currentuser-tag {
   color: #FFB571;
 }
 .cm-dots-placeholder-tag {
@@ -932,8 +1039,27 @@ span.CodeMirror-selectedtext {
   .cm-start-namespace-tag,
   .cm-middle-namespace-tag,
   .cm-end-namespace-tag,
+  .cm-start-table-tag--string,
+  .cm-start-table-tag--number,
+  .cm-start-table-tag--boolean,
+  .cm-start-table-tag--date,
+  .cm-start-currentvalue-tag--string,
+  .cm-start-currentvalue-tag--number,
+  .cm-start-currentvalue-tag--boolean,
+  .cm-start-currentvalue-tag--date,
+  .cm-start-currentuser-tag--string,
+  .cm-start-currentuser-tag--number,
+  .cm-start-currentuser-tag--boolean,
+  .cm-start-currentuser-tag--date,
   .cm-dots-table-tag,
   .cm-dots-currentvalue-tag,
   .cm-dots-currentuser-tag{
     cursor: context-menu;
+  }
+
+
+  /* custom cursors */
+  .CodeMirror-cursor {
+    /* top: 2px !important; */
+    /* height: 15px !important; */
   }
