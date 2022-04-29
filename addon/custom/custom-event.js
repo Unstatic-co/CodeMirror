@@ -111,15 +111,15 @@
       handleDblclick(cm, event, state)
     })
 
-    cm.on('change', function (_cm, data) {
-      const line = _cm.doc.getCursor().line;
-      const textOfLine = _cm.doc.getLine(line);
+    // cm.on('change', function (_cm, data) {
+    //   const line = _cm.doc.getCursor().line;
+    //   const textOfLine = _cm.doc.getLine(line);
 
-      const value = _cm.getValue();
-      if (!value.includes(';') && !!textOfLine) {
-        _cm.showHint(hintOptions)
-      }
-    })
+    //   const value = _cm.getValue();
+    //   if (!value.includes(';') && !!textOfLine) {
+    //     _cm.showHint(hintOptions)
+    //   }
+    // })
 
   })
 
@@ -200,7 +200,7 @@
     if (keyName === 'Backspace' || keyName === 'Delete') {
       const _somethingSelected = cm.somethingSelected();
       let _textPrevSelection = state.textPrevSelection;
-      // const hadWhiteSpaces = _textPrevSelection?.match(/\s+/g);
+      const hadWhiteSpaces = _textPrevSelection ? _textPrevSelection.match(/\s+/g) : false;
       // const hadDots = _textPrevSelection?.match(/\./g);
       // const wordsWithoutDots = _textPrevSelection.match(/(^|\s)([^\s\.]+)($|\s)/g);
       if (_somethingSelected || !!!_textPrevSelection || hadWhiteSpaces) return;

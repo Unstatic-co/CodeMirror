@@ -6,6 +6,8 @@
   height: 300px;
   color: black;
   direction: ltr;
+  padding-top: 15px;
+  padding-bottom: 15px;
 }
 
 /* PADDING */
@@ -870,6 +872,28 @@ span.CodeMirror-selectedtext {
   bottom: -1px;
   left: -100%;
   background-color: #FFB571;
+}
+
+.cm-single-placeholder-tag {
+  background-color: #919191;
+  border-radius: 25px;
+  padding-top: 3px;
+  padding-bottom: 3px;
+  padding-left: 22px;
+  padding-right: 12px;
+  position: relative;
+}
+
+.cm-single-placeholder-tag::before {
+  content: 'Pl';
+  position: absolute;
+  left: 5px;
+  height: 100%;
+  top: 3px;
+  display: inline-block;
+  opacity: 1;
+  font-weight: bold;
+  font-size: 11px;
 }
 
 .cm-dots-table-tag {
