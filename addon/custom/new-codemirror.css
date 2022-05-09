@@ -519,12 +519,13 @@ div.CodeMirror-dragcursors {
   visibility: visible;
 }
 
+/* custom selected */
 .CodeMirror-selected {
   background: #d9d9d9;
 }
 
 .CodeMirror-focused .CodeMirror-selected {
-  background: #d7d4f0;
+  background: blue;
 }
 
 .CodeMirror-crosshair {
@@ -534,13 +535,13 @@ div.CodeMirror-dragcursors {
 .CodeMirror-line::selection,
 .CodeMirror-line>span::selection,
 .CodeMirror-line>span>span::selection {
-  background: #d7d4f0;
+  /* background: #d7d4f0; */
 }
 
 .CodeMirror-line::-moz-selection,
 .CodeMirror-line>span::-moz-selection,
 .CodeMirror-line>span>span::-moz-selection {
-  background: #d7d4f0;
+  /* background: #d7d4f0; */
 }
 
 .cm-searching {
@@ -1025,6 +1026,11 @@ span.CodeMirror-selectedtext {
   /* color: #75A4FF; */
 }
 
+.cm-variable ~ .cm-dots-currentvalue-tag {
+  /* color:  white !important; */
+}
+
+/* style cursor */
 .cm-single-table-tag,
   .cm-start-table-tag,
   .cm-middle-table-tag,
@@ -1062,10 +1068,12 @@ span.CodeMirror-selectedtext {
   .cm-dots-currentuser-tag{
     cursor: context-menu;
   }
-
-
-  /* custom cursors */
-  .CodeMirror-cursor {
-    /* top: 2px !important; */
-    /* height: 15px !important; */
-  }
+  
+/* .cm-single-table-tag::before {
+  content: '';
+  position: static;
+  display: inline-block;
+}
+.cm-single-table-tag {
+  padding-left: 0 !important;
+} */
