@@ -40,9 +40,8 @@ export function drawSelectionCursor(cm, head, output) {
 
   let cursor = output.appendChild(elt("div", "\u00a0", "CodeMirror-cursor"))
   cursor.style.left = pos.left + "px"
-  cursor.style.top = pos.top + "px"
+  cursor.style.top = pos.top + 3 + "px"
   cursor.style.height = Math.max(0, pos.bottom - pos.top) * cm.options.cursorHeight + "px"
-
   if (/\bcm-fat-cursor\b/.test(cm.getWrapperElement().className)) {
     let charPos = charCoords(cm, head, "div", null, null)
     let width = charPos.right - charPos.left
