@@ -8,6 +8,8 @@ import { indexOf } from "../util/misc.js"
 
 import { defineOptions } from "./options.js"
 
+import {formulaTags} from '../../addon/custom/model.js'
+
 defineOptions(CodeMirror)
 
 import addEditorMethods from "./methods.js"
@@ -67,3 +69,4 @@ import { addLegacyProps } from "./legacy.js"
 addLegacyProps(CodeMirror)
 
 CodeMirror.version = "5.65.2"
+CodeMirror.formulaTags = formulaTags

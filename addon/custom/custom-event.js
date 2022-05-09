@@ -7,49 +7,87 @@
     mod(CodeMirror);
 })(function (CodeMirror) {
 
-  const baseClass = {
-    ['cm-keyword']: 'cm-keyword',
-    ['cm-def']: 'cm-def',
-    ['cm-operator']: 'cm-operator',
-    ['cm-property']: 'cm-property',
-    ['cm-number']: 'cm-number',
-    ['cm-string']: 'cm-string',
-    ['cm-variable']: 'cm-variable',
-    ['cm-variable-2']: 'cm-variable-2',
-    ['cm-type']: 'cm-type',
-    ['cm-atom']: 'cm-atom',
-    ['cm-punctuation']: 'cm-punctuation',
-    ['cm-comment']: 'cm-comment',
-    ['cm-string-2']: 'cm-string-2',
-    ['cm-meta']: 'cm-meta',
-    ['cm-qualifier']: 'cm-qualifier',
-    ['cm-builtin']: 'cm-builtin',
-    ['cm-bracket']: 'cm-bracket',
-    ['cm-tag']: 'cm-tag',
-    ['cm-attribute']: 'cm-attribute',
-    ['cm-hr']: 'cm-hr',
-    ['cm-link']: 'cm-link',
-    ['cm-error']: 'cm-error',
-    ['cm-header']: 'cm-header',
-    ['cm-quote']: 'cm-quote',
-    ['cm-strikethrough']: 'cm-strikethrough',
-    ['cm-positive']: 'cm-positive',
-    ['cm-negative']: 'cm-negative',
-    ['cm-strong']: 'cm-strong',
-    ['cm-em']: 'cm-em',
-    ['cm-invalidchar']: 'cm-invalidchar'
+  const formulaTagClass = {
+    'cm-single-table-tag': 'cm-single-table-tag',
+    'cm-start-table-tag': 'cm-start-table-tag',
+    'cm-middle-table-tag': 'cm-single-table-tag',
+    'cm-end-table-tag': 'cm-single-table-tag',
+
+    'cm-single-currentvalue-tag': 'cm-single-currentvalue-tag',
+    'cm-start-currentvalue-tag': 'cm-start-currentvalue-tag',
+    'cm-middle-currentvalue-tag': 'cm-middle-currentvalue-tag',
+    'cm-end-currentvalue-tag': 'cm-end-currentvalue-tag',
+
+    'cm-single-currentuser-tag': 'cm-single-currentuser-tag',
+    'cm-start-currentuser-tag': 'cm-start-currentuser-tag',
+    'cm-middle-currentuser-tag': 'cm-middle-currentuser-tag',
+    'cm-end-currentuser-tag': 'cm-end-currentuser-tag',
+
+    'cm-single-placeholder-tag': 'cm-single-placeholder-tag',
+    'cm-start-placeholder-tag': 'cm-start-placeholder-tag',
+    'cm-middle-placeholder-tag': 'cm-middle-placeholder-tag',
+    'cm-end-placeholder-tag': 'cm-end-placeholder-tag',
+
+    'cm-single-namepace-tag': 'cm-single-namepace-tag',
+    'cm-start-namepace-tag': 'cm-start-namepace-tag',
+    'cm-middle-namepace-tag': 'cm-middle-namepace-tag',
+    'cm-end-namepace-tag': 'cm-end-namepace-tag',
+
+    'cm-dots-table-tag': 'cm-dots-table-tag',
+    'cm-dots-currentvalue-tag': 'cm-dots-currentvalue-tag',
+    'cm-dots-currentuser-tag': 'cm-dots-currentuser-tag',
+    'cm-dots-placeholder-tag': 'cm-dots-placeholder-tag',
+    'cm-dots-namespace-tag': 'cm-dots-namespace-tag',
+
+    'cm-start-table-tag--string': 'cm-start-table-tag--string',
+    'cm-start-table-tag--number': 'cm-single-table-tag--number',
+    'cm-start-table-tag--boolean': 'cm-single-table-tag--boolean',
+    'cm-start-table-tag--date': 'cm-single-table-tag--date',
+
+    'cm-start-currentvalue-tag--string': 'cm-start-currentvalue-tag--string',
+    'cm-middle-currentvalue-tag--number': 'cm-single-currentvalue-tag--number',
+    'cm-end-currentvalue-tag--boolean': 'cm-single-currentvalue-tag--boolean',
+    'cm-end-currentvalue-tag--date': 'cm-single-currentvalue-tag--date',
+
+    'cm-start-currentuser-tag--string': 'cm-start-currentuser-tag--string',
+    'cm-middle-currentuser-tag--number': 'cm-single-currentuser-tag--number',
+    'cm-end-currentuser-tag--boolean': 'cm-single-currentuser-tag--boolean',
+    'cm-end-currentuser-tag--date': 'cm-single-currentuser-tag--date',
   }
 
-  const keyTagClass = {
-    'cm-keyword': "cm-keyword"
-  }
+  // const baseClass = {
+  //   ['cm-keyword']: 'cm-keyword',
+  //   ['cm-def']: 'cm-def',
+  //   ['cm-operator']: 'cm-operator',
+  //   ['cm-property']: 'cm-property',
+  //   ['cm-number']: 'cm-number',
+  //   ['cm-string']: 'cm-string',
+  //   ['cm-variable']: 'cm-variable',
+  //   ['cm-variable-2']: 'cm-variable-2',
+  //   ['cm-type']: 'cm-type',
+  //   ['cm-atom']: 'cm-atom',
+  //   ['cm-punctuation']: 'cm-punctuation',
+  //   ['cm-comment']: 'cm-comment',
+  //   ['cm-string-2']: 'cm-string-2',
+  //   ['cm-meta']: 'cm-meta',
+  //   ['cm-qualifier']: 'cm-qualifier',
+  //   ['cm-builtin']: 'cm-builtin',
+  //   ['cm-bracket']: 'cm-bracket',
+  //   ['cm-tag']: 'cm-tag',
+  //   ['cm-attribute']: 'cm-attribute',
+  //   ['cm-hr']: 'cm-hr',
+  //   ['cm-link']: 'cm-link',
+  //   ['cm-error']: 'cm-error',
+  //   ['cm-header']: 'cm-header',
+  //   ['cm-quote']: 'cm-quote',
+  //   ['cm-strikethrough']: 'cm-strikethrough',
+  //   ['cm-positive']: 'cm-positive',
+  //   ['cm-negative']: 'cm-negative',
+  //   ['cm-strong']: 'cm-strong',
+  //   ['cm-em']: 'cm-em',
+  //   ['cm-invalidchar']: 'cm-invalidchar'
+  // }
 
-  // CodeMirror.on(document.documentElement, 'mouseup', function () {
-  //   const elCodemirrorFocus = document.querySelector('.f-cm-focus');
-  //   if (elCodemirrorFocus) {
-  //     elCodemirrorFocus.classList.remove('f-cm-focus');
-  //   }
-  // })
 
   CodeMirror.customEvent = (cm) => {
     return cm.customEvent(cm);
@@ -73,6 +111,8 @@
     })
 
     cm.on('keydown', function (_cm, event) {
+      // const keyName = CodeMirror.keyName(event);
+      // const extra = cm.getOption('extraKeys');
       handleOnKeyDown(_cm, event, state);
     })
 
@@ -89,6 +129,7 @@
         _cm.showHint(hintOptions)
       }
     })
+
   })
 
   /**
@@ -103,25 +144,58 @@
   function handleOnMousedown(cm, event, state) {
     const _element = event.target;
     if (!_element) return;
-
-    const elTagSelected = document.querySelector('.f-cm-tag-selected');
+    // const elTagSelected = document.querySelector('.f-cm-tag-selected');
     const elCursors = document.querySelector('.CodeMirror-cursors');
-    const textOfElement = _element.innerText || '';
 
-    if (elTagSelected) {
-      elTagSelected.classList.remove('f-cm-tag-selected');
-    }
+    let textOfElement = _element.innerText || '';
+    if (formulaTagClass[_element.className]) {
+      let existNextClass = true,
+        existPrevClass = true,
+        nexCurrent = _element,
+        prevElCurrent = _element;
 
-    // if (baseClass[_element.className]) {
-    //   _element.classList.add('f-cm-tag-selected');
-    //   elCursors.style.display = 'none';
-    // } else elCursors.style.display = 'unset';
+      while (true) {
+        const nextElementSibling = nexCurrent ? nexCurrent.nextElementSibling : null;
+        const prevElementSibling = prevElCurrent ? prevElCurrent.previousElementSibling : null;
+        if (nextElementSibling) {
+          const nextClass = nextElementSibling.className;
+          if (formulaTagClass[nextClass] && nextClass) {
+            // textOfElement = textOfElement + '.' + nextElementSibling.innerText;
+            textOfElement = textOfElement + nextElementSibling.innerText;
+          } else existNextClass = false;
+        } else existNextClass = false;
 
-    if (keyTagClass[_element.className]) {
+        if (prevElementSibling) {
+          const prevClass = prevElementSibling.className;
+          if (formulaTagClass[prevClass] && existPrevClass) {
+            // textOfElement = prevElementSibling.innerText + '.' + textOfElement;
+            textOfElement = prevElementSibling.innerText + textOfElement;
+          } else existPrevClass = false;
+        } else existPrevClass = false
+
+        if ((!existNextClass && !existPrevClass)) {
+          break
+        }
+        nexCurrent = nextElementSibling;
+        prevElCurrent = prevElementSibling;
+      }
+
       state['textPrevSelection'] = textOfElement;
-      _element.classList.add('f-cm-tag-selected');
       elCursors.style.display = 'none';
-    } else elCursors.style.display = 'unset';
+    } else {
+      // const textOfLine = _element.innerText,
+        // textOfLineArr = textOfLine.split('.'),
+        // textFirstOfLine = textOfLineArr[0];
+        // const elRect = _element.getBoundingClientRect()
+        // const offsetX = event.clientX || event.pageX;
+        // const ELEMENT_PADDING = 4;
+
+        // todo
+        // const isHiddenCursors = (offsetX <= (elRect.x + ELEMENT_PADDING)) && (_element.className.includes('CodeMirror-linenumber') || _element.className.includes('CodeMirror-gutters'));
+        // isHiddenCursors ? elCursors.style.display = 'none' : elCursors.style.display = 'unset';
+      elCursors.style.display = 'unset';
+      state['textPrevSelection'] = null;
+    };
 
     state['mousedownCursors'] = cm.getDoc().getCursor();
     state['elCursors'] = elCursors;
@@ -137,22 +211,28 @@
    * @returns () => void
    */
   function handleOnKeyDown(cm, event, state) {
-    const CHAR_BACKSPACE = 'Backspace',
-      CODE_BACKSPACE = 8,
-      CODE_DEL = 46,
-      CODE_SEMI_COLON = 186
-    if (event.key === CHAR_BACKSPACE || event.which === CODE_BACKSPACE || event.which === CODE_DEL) {
+    const CODE_SEMI_COLON = 186,
+      keyName = CodeMirror.keyName(event);
+
+    // const isConditionPass = event.key === CHAR_BACKSPACE || event.which === CODE_BACKSPACE || event.which === CODE_DEL;
+
+    if (keyName === 'Backspace' || keyName === 'Delete') {
       const _somethingSelected = cm.somethingSelected();
-      const _textPrevSelection = state.textPrevSelection;
-      const hadWhiteSpaces = _textPrevSelection?.match(/\s+/g);
-      const hadDots = _textPrevSelection?.match(/\./g);
+      let _textPrevSelection = state.textPrevSelection;
+      const hadWhiteSpaces = _textPrevSelection ? _textPrevSelection.match(/\s+/g) : false;
+      // const hadDots = _textPrevSelection?.match(/\./g);
       // const wordsWithoutDots = _textPrevSelection.match(/(^|\s)([^\s\.]+)($|\s)/g);
-      if (_somethingSelected || hadWhiteSpaces || hadDots || !!!_textPrevSelection) return;
+      if (_somethingSelected || !!!_textPrevSelection || hadWhiteSpaces) return;
+      const _textPrevSelectionArr = _textPrevSelection.split('.')
+
+      if (_textPrevSelectionArr.length === 2 && !!!_textPrevSelectionArr[1]) {
+        _textPrevSelection = _textPrevSelection.replace(/\./g, '');
+      }
 
       const _doc = cm.getDoc(),
         line = _doc.getCursor().line,
         ch = _doc.getCursor().ch,
-        length = state.textPrevSelection.length,
+        length = _textPrevSelection.length,
         n = length === 1 ? 1 : length === 2 ? 2 : 3,
         subText = _doc.getLine(line).substr(Math.max(ch - n, 0), n),
         indexOfSubText = state.textPrevSelection.indexOf(subText),
@@ -171,24 +251,30 @@
 
       _doc.setSelection(anchor, head);
     }
-    if(event.which === CODE_SEMI_COLON){
+
+
+    if (event.which === CODE_SEMI_COLON) {
       state['hadSemiColon'] = true;
     }
+
   }
 
   function handleDblclick(cm, event, state) {
-    const elCodemirror = document.querySelector('.CodeMirror');
-    if (elCodemirror) elCodemirror.classList.add('f-cm-focus');
-    const elCursors = state.elCursors;
-    const cursors = state.mousedownCursors
-
-    cm.doc.setSelection(cursors, cursors);
-    if (elCursors) {
-      editor.focus();
-      editor.setCursor(cursors)
-      elCursors.style.display = 'unset'
+    const className = event.target.className;
+    if (formulaTagClass[className]) {
+      const elCodemirror = document.querySelector('.CodeMirror');
+      if (elCodemirror) elCodemirror.classList.add('f-cm-focus');
+      const elCursors = state.elCursors;
+      const cursors = state.mousedownCursors
+      cm.doc.setSelection(cursors, cursors);
+      if (elCursors) {
+        cm.focus();
+        cm.setCursor(cursors)
+        elCursors.style.display = 'unset'
+      }
+      state['textPrevSelection'] = '';
     }
-    state['textPrevSelection'] = '';
+
   }
 
   // CodeMirror.defineOption('customEvent', {

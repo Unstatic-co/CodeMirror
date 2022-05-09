@@ -4,27 +4,36 @@
 <meta charset="utf-8" />
 <link rel="stylesheet" href="../doc/docs.css" />
 
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+
 <!-- <link rel="stylesheet" href="../lib/codemirror.css" /> -->
 <link rel="stylesheet" href="../addon/custom/new-codemirror.css" />
 <link rel="stylesheet" href="../addon/custom/new-show-hint.css" />
 
 <link rel="stylesheet" href="../addon/lint/lint.css" />
+<link rel="stylesheet" href="../theme/ayu-dark.css">
 
 <script src="../lib/codemirror.js"></script>
 <script src="../addon/hint/show-hint.js"></script>
 <script src="../addon/hint/javascript-hint.js"></script>
 <script src="../mode/javascript/javascript.js"></script>
 <script src="../mode/markdown/markdown.js"></script>
-<!-- <script src="../addon/custom/custom-event.js"></script> -->
+<script src="../addon/custom/custom-event.js"></script>
 
-<script src="https://unpkg.com/jshint@2.13.2/dist/jshint.js"></script>
+
+<!-- <script src="https://unpkg.com/jshint@2.13.2/dist/jshint.js"></script>
 <script src="https://unpkg.com/jsonlint@1.6.3/web/jsonlint.js"></script>
-<script src="https://unpkg.com/csslint@1.0.5/dist/csslint.js"></script>
-<script src="../addon/lint/lint.js"></script>
-<script src="../addon/lint/javascript-lint.js"></script>
-<script src="../addon/lint/css-lint.js"></script>
+<script src="https://unpkg.com/csslint@1.0.5/dist/csslint.js"></script> -->
+<!-- <script src="../addon/lint/lint.js"></script> -->
+<!-- <script src="../addon/lint/javascript-lint.js"></script> -->
+<!-- <script src="../addon/lint/css-lint.js"></script> -->
 
 <style>
+  *{
+    font-family: 'Roboto Mono', monospace;
+  }
 </style>
 
 <div id="nav">
@@ -47,59 +56,19 @@
 <article>
   <h2>Autocomplete Demo</h2>
   <form>
-    <textarea id="code" name="code">
-function getCompletions(token, context) {
-  var found = [], start = token.string;
-  function maybeAdd(str) {
-    if (str.indexOf(start) == 0) found.push(str);
-  }
-  function gatherCompletions(obj) {
-    if (typeof obj == "string") forEach(stringProps, maybeAdd);
-    else if (obj instanceof Array) forEach(arrayProps, maybeAdd);
-    else if (obj instanceof Function) forEach(funcProps, maybeAdd);
-    for (var name in obj) maybeAdd(name);
-  }
-
-  if (context) {
-    // If this is a property, see if it belongs to some object we can
-    // find in the current environment.
-    var obj = context.pop(), base;
-    if (obj.className == "js-variable")
-      base = window[obj.string];
-    else if (obj.className == "js-string")
-      base = "";
-    else if (obj.className == "js-atom")
-      base = 1;
-    while (base != null && context.length)
-      base = base[context.pop().string];
-    if (base != null) gatherCompletions(base);
-  }
-  else {
-    // If not, just look in the window object and any local scope
-    // (reading into JS mode internals to get at the local variables)
-    for (var v = token.state.localVars; v; v = v.next) maybeAdd(v.name);
-    gatherCompletions(window);
-    forEach(keywords, maybeAdd);
-  }
-  return found;
-}
-</textarea
-    >
-  </form>
-
-  <form>
-    <textarea style="display: none" id="synonyms" name="synonyms">
-Here, the completion use an asynchronous hinting function to provide
-synonyms for each words. If your browser support `Promises`, the
-hinting function can also return one.
-</textarea
-    >
+    <textarea id="code" name="code">Products.Filter(CurrentValue.Name)</textarea>
   </form>
 
   <script>
     var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
       lineNumbers: true,
-      extraKeys: { "Ctrl-Space": "autocomplete" },
+      // extraKeys: { 
+      //   "Ctrl-Space": "autocomplete",
+      //   "Backspace": function(){
+      //     console.log(222)
+      //   }
+      //  },
+      cursorHeight: 0.85,
       mode: { name: "javascript", globalVars: true },
       gutters: ["CodeMirror-lint-markers"],
       lint: { options: { esversion: 2021 } },

@@ -177,6 +177,8 @@ function buildToken(builder, text, style, startStyle, endStyle, css, attributes)
       builder.pos++
     }
   }
+
+  
   builder.trailingSpace = displayText.charCodeAt(text.length - 1) == 32
   if (style || startStyle || endStyle || mustWrap || css || attributes) {
     let fullStyle = style || ""

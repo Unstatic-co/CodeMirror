@@ -1,7 +1,7 @@
 .CodeMirror-hints {
   position: absolute;
   z-index: 10;
-  overflow: hidden;
+  /* overflow: hidden; */
   list-style: none;
 
   margin: 0;
@@ -25,16 +25,62 @@
 
 .CodeMirror-hint {
   margin: 0;
-  padding: 6px;
+  padding: 6.85px 6px;
   white-space: pre;
   color: white;
   cursor: pointer;
   font-size: 11px;
   line-height: 14.51px;
   font-weight: 400;
+
+  /* [add] show document and sub-description hint */
+  position: relative;
+  padding-right: 6px !important;
 }
 
 li.CodeMirror-hint-active {
   background: #1F63E7  ;
   color: white;
+}
+
+
+/* document hint */
+
+.doc-hint {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: fit-content;
+  block-size: fit-content;
+  opacity: 0;
+  visibility: hidden;
+  background: #3D3D3D;
+  padding: 8px 12px;
+  border-radius: 3px;
+  border: 1px solid #4E4E4E;
+}
+.doc-hint p {
+  margin-bottom: 0;
+}
+
+/* sub description */
+.sub-description-hint {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: 400;
+  float: right;
+}
+
+/* icon hint */
+.cmw-icon {
+  margin-right: 4px;
+  width: fit-content !important;
+  block-size: fit-content;
+  width: 16px;
+  height: 16px;
+}
+
+.cmw-icon::after {
+  content: '' !important;
+  background-image: url('./icons/ic-products.svg');
 }
