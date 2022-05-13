@@ -50,14 +50,20 @@ li.CodeMirror-hint-active {
   position: fixed;
   top: 0;
   right: 0;
-  width: fit-content;
-  block-size: fit-content;
-  opacity: 0;
-  visibility: hidden;
+  /* width: fit-content;
+  block-size: fit-content; */
+  /* opacity: 0;
+  visibility: hidden; */
   background: #3D3D3D;
   padding: 8px 12px;
   border-radius: 3px;
   border: 1px solid #4E4E4E;
+  display: none;
+
+  /*  */
+  max-width: 268px;
+  max-height: 408px;
+  overflow-y: auto;
 }
 .doc-hint p {
   margin-bottom: 0;
@@ -73,14 +79,83 @@ li.CodeMirror-hint-active {
 
 /* icon hint */
 .cmw-icon {
-  margin-right: 4px;
-  width: fit-content !important;
-  block-size: fit-content;
+  width: 16px !important;
+  height: 16px !important;
+  transform: translateY(-2px) !important;
+  opacity: 1 !important;
+  vertical-align: middle;
+}
+
+.codemirror-hint-table--icon .cmw-icon::after {
+  content: url('./icons/ic-products.svg') !important;
   width: 16px;
   height: 16px;
 }
 
-.cmw-icon::after {
-  content: '' !important;
-  background-image: url('./icons/ic-products.svg');
+.codemirror-hint-currentvalue--icon .cmw-icon::after {
+  content: url('./icons/ic-current-value-tag-type.svg') !important;
+  width: 16px;
+  height: 16px;
+}
+
+.codemirror-hint-currentuser--icon .cmw-icon::after {
+  content: url('./icons/ic-current-user-tag-type.svg') !important;
+  width: 16px;
+  height: 16px;
+}
+
+
+
+/** doc hint */
+.doc-hint p {
+  white-space: initial;
+}
+.doc-hint-example, .doc-declaration-hint, .doc-description-hint, .doc-parameters-hint, .doc-return-hint {
+  display: grid;
+  grid-template-columns: 75px 1fr;
+  padding-bottom: 10px;
+  grid-gap: 12px;
+  color: rgba(255, 255, 255, 0.6);
+}
+.doc-hint-example p:first-child, 
+.doc-declaration-hint p:first-child,
+.doc-description-hint p:first-child, 
+.doc-parameters-hint p:first-child, 
+.doc-return-hint p:first-child {
+  text-align: right;
+}
+
+.doc-hint-example p:last-child {
+  background-color: #2B2B2B;
+  padding: 6px 8px;
+  border-radius: 3px;
+  border: 1px solid #4E4E4E;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.doc-hint-example p:last-child span {
+  color: white;
+}
+
+.doc-declaration-hint p:last-child{
+  color: white;
+}
+
+.doc-declaration-hint p:last-child span{
+  display: inline-block;
+  white-space: initial;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.doc-return-hint p:last-child {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.doc-parameters-hint p:last-child {
+  color: white;
+}
+
+.doc-parameters-hint p:last-child p {
+  color: rgba(255, 255, 255, 0.6);
+  text-align: left;
 }
