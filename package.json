@@ -1,6 +1,6 @@
 {
   "name": "@unstatic-co/appformula-codemirror",
-  "version": "1.0.7",
+  "version": "1.0.9",
   "main": "lib/codemirror.js",
   "style": "lib/codemirror.css",
   "author": {

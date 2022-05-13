@@ -13,6 +13,14 @@
 })(function(CodeMirror) {
   "use strict";
 
+
+  // [Ntank] data-demo
+
+  const DECLARATIONS = 'Random(Lowerbound, Upperbound)';
+  const DESCRIPTION = 'Concatenate two strings separated by a space and use this for the elements of array.';
+  const PARAMETERS = 'Concatenate two strings separated by a space and use this for the elements of array.';
+
+
   var HINT_ELEMENT_CLASS        = "CodeMirror-hint";
   var ACTIVE_HINT_ELEMENT_CLASS = "CodeMirror-hint-active";
 
@@ -241,6 +249,9 @@
     this.selectedHint = data.selectedHint || 0;
 
     var completions = data.list;
+
+    // initDocumentHint(ownerDocument, hints, cur);
+    
     for (var i = 0; i < completions.length; ++i) {
       var elt = hints.appendChild(ownerDocument.createElement("li")), cur = completions[i];
       // [Ntank]
@@ -255,65 +266,78 @@
       elt.setAttribute("role", "option")
       if (cur.render) {
         cur.render(elt, data, cur);
-        elt.classList.add('codemirror-hint--icon');
+        const type = CodeMirror.formulaTags[cur.displayText];
+        elt.classList.add(`codemirror-hint-${type}--icon`);
       } else {
         elt.appendChild(ownerDocument.createTextNode(cur.displayText || getText(cur)));
       }
 
       elt.hintId = i;
       
-      // [Ntank] show document hint
+      // [Ntank] create document hint
       if(eltDocumentHint){
-        const eltTextHint = ownerDocument.createElement('p');
-        const textHint = ownerDocument.createTextNode(`${cur.displayText || getText(cur)} document here...`);
+        // const eltTextHint = ownerDocument.createElement('p');
+        // const textHint = ownerDocument.createTextNode(`${cur.displayText || getText(cur)} document here...`);
         eltDocumentHint.classList.add('doc-hint')
-        eltTextHint.appendChild(textHint);
-        eltDocumentHint.appendChild(eltTextHint);
+        initDocBase3(ownerDocument, eltDocumentHint, {
+          title: 'Declaration',
+          func: cur.displayText || getText(cur),
+          param: 'Lowerbound, Upperbound'
+        })
+        initDocBase1(ownerDocument, eltDocumentHint, {
+          title: 'Description',
+          description: 'Concatenate two strings separated by a space and use this for the elements of array.'
+        })
+        initDocBase2(ownerDocument, eltDocumentHint, {
+          title: 'Parameters',
+          subTitle: 'Lowerbound',
+          description: 'lower bound of randomization, a number'
+        })
+        initDocBase1(ownerDocument, eltDocumentHint, {title: 'Return', description: 'Random value in specified range.'})
+        initDocExample(ownerDocument, eltDocumentHint);
         elt.appendChild(eltDocumentHint);
       }
 
-      
       // create sub description
       if(elSubDescription){
+        // const text = cur.displayText || getText(cur);
+        // const _description = CodeMirror.formulaTags[text] || 'variable';
         elSubDescription.classList.add('sub-description-hint');
-        elSubDescription.appendChild(ownerDocument.createTextNode(`type`));
+        elSubDescription.appendChild(ownerDocument.createTextNode('variable'));
         elt.appendChild(elSubDescription);
       }
 
       // const kind = cur.item.kind;
-
       // console.log('kind')
 
       elt.addEventListener('mouseenter', function(e){
         // todo
         const _elt = e.target;
         const _eltDocumentHint = _elt.children[0];
-        const eltRect = _elt.getBoundingClientRect();
+        // const eltRect = _elt.getBoundingClientRect();
         const hintsRect = hints.getBoundingClientRect();
         const SPACE = 2;
 
         _eltDocumentHint.setAttribute('style', `
           top: ${hintsRect.y}px;
           left: ${hintsRect.width + hintsRect.x + SPACE}px;
-          opacity: 1;
-          visibility: visible;
+          display: block;
         `)
-        
+
       })
 
       elt.addEventListener('mouseleave', function(e){
         // todo
         const _elt = e.target;
         const _eltDocumentHint = _elt.children[0];
-        const eltRect = _elt.getBoundingClientRect();
+        // const eltRect = _elt.getBoundingClientRect();
         const hintsRect = hints.getBoundingClientRect();
         const SPACE = 2;
 
         _eltDocumentHint.setAttribute('style', `
           top: ${hintsRect.y}px;
           left: ${hintsRect.width + hintsRect.x + SPACE}px;
-          opacity: 0;
-          visibility: hidden;
+          display: none;
         `)
 
       })
@@ -396,7 +420,7 @@
 
     if (completion.options.closeOnUnfocus) {
       var closingOnBlur;
-      cm.on("blur", this.onBlur = function() { closingOnBlur = setTimeout(function() { completion.close(); }, 100); });
+      // cm.on("blur", this.onBlur = function() { closingOnBlur = setTimeout(function() { completion.close(); }, 100); });
       cm.on("focus", this.onFocus = function() { clearTimeout(closingOnBlur); });
     }
 
@@ -468,6 +492,7 @@
     },
 
     changeActive: function(i, avoidWrap) {
+      // console.log('Change active', avoidWrap, i, this.data)
       if (i >= this.data.list.length)
         i = avoidWrap ? this.data.list.length - 1 : 0;
       else if (i < 0)
@@ -483,6 +508,7 @@
       node.setAttribute("aria-selected", "true")
       this.completion.cm.getInputField().setAttribute("aria-activedescendant", node.id)
       this.scrollToActive()
+
       CodeMirror.signal(this.data, "select", this.data.list[this.selectedHint], node);
     },
 
@@ -553,6 +579,87 @@
       return function() {}
     }
   }
+
+  // [Ntank custom]
+  function initDocBase3(ownerDocument, elParent, data){
+    const {title, func, param} = data;
+
+    const divWrapper = ownerDocument.createElement('div');
+    const pTitle = ownerDocument.createElement('p');
+    const pContent1 = ownerDocument.createElement('p');
+    const sParam = ownerDocument.createElement('span');
+
+    divWrapper.classList.add(`doc-${title.toLowerCase()}-hint`)
+    
+    pTitle.appendChild(ownerDocument.createTextNode(title))
+    pContent1.appendChild(ownerDocument.createTextNode(func))
+    
+    sParam.appendChild(ownerDocument.createTextNode(param))
+    pContent1.appendChild(ownerDocument.createTextNode('('))
+    pContent1.appendChild(sParam)
+    pContent1.appendChild(ownerDocument.createTextNode(')'))
+
+    divWrapper.appendChild(pTitle)
+    divWrapper.appendChild(pContent1)
+
+    elParent.appendChild(divWrapper);
+  }
+
+  function initDocBase2(ownerDocument, elParent, data){
+    const {title, subTitle, description} = data;
+
+    const divWrapper = ownerDocument.createElement('div');
+    const pTitle = ownerDocument.createElement('p');
+    const pContent1 = ownerDocument.createElement('p');
+    const pDescription = ownerDocument.createElement('p');
+
+    divWrapper.classList.add(`doc-${title.toLowerCase()}-hint`)
+    
+    pTitle.appendChild(ownerDocument.createTextNode(title))
+    pContent1.appendChild(ownerDocument.createTextNode(subTitle))
+    pDescription.appendChild(ownerDocument.createTextNode(description))
+    pContent1.appendChild(pDescription)
+
+    divWrapper.appendChild(pTitle)
+    divWrapper.appendChild(pContent1)
+
+    elParent.appendChild(divWrapper);
+  }
+
+  function initDocBase1(ownerDocument, elParent, data){
+    const {title, description} = data;
+    const divWrapper = ownerDocument.createElement('div');
+    const pTitle = ownerDocument.createElement('p');
+    const pContent = ownerDocument.createElement('p');
+
+    divWrapper.classList.add(`doc-${title.toLowerCase()}-hint`)
+    pTitle.appendChild(ownerDocument.createTextNode(title))
+    pContent.appendChild(ownerDocument.createTextNode(description))
+    divWrapper.appendChild(pTitle)
+    divWrapper.appendChild(pContent)
+
+    elParent.appendChild(divWrapper);
+  }
+
+  function initDocExample(ownerDocument, elParent){
+    const divWrapper = ownerDocument.createElement('div');
+    const pTitle = ownerDocument.createElement('p');
+    const pContent1 = ownerDocument.createElement('p');
+    const spanContent1 = ownerDocument.createElement('span');
+
+    divWrapper.classList.add('doc-hint-example');
+
+    pTitle.appendChild(ownerDocument.createTextNode('Example'));
+    pContent1.appendChild(ownerDocument.createTextNode('Math.Random(100, 200)'));
+    spanContent1.appendChild(ownerDocument.createTextNode('=120'));
+    pContent1.appendChild(spanContent1)
+    divWrapper.appendChild(pTitle);
+    divWrapper.appendChild(pContent1);
+
+    elParent.appendChild(divWrapper);
+  }
+
+  // 
 
   CodeMirror.registerHelper("hint", "auto", {
     resolve: resolveAutoHints
