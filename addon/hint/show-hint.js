@@ -266,7 +266,8 @@
       elt.setAttribute("role", "option")
       if (cur.render) {
         cur.render(elt, data, cur);
-        elt.classList.add('codemirror-hint--icon');
+        const type = CodeMirror.formulaTags[cur.displayText];
+        elt.classList.add(`codemirror-hint-${type}--icon`);
       } else {
         elt.appendChild(ownerDocument.createTextNode(cur.displayText || getText(cur)));
       }
@@ -297,11 +298,12 @@
         elt.appendChild(eltDocumentHint);
       }
 
-      
       // create sub description
       if(elSubDescription){
+        // const text = cur.displayText || getText(cur);
+        // const _description = CodeMirror.formulaTags[text] || 'variable';
         elSubDescription.classList.add('sub-description-hint');
-        elSubDescription.appendChild(ownerDocument.createTextNode(`type`));
+        elSubDescription.appendChild(ownerDocument.createTextNode('variable'));
         elt.appendChild(elSubDescription);
       }
 
@@ -490,7 +492,7 @@
     },
 
     changeActive: function(i, avoidWrap) {
-      console.log('Change active', avoidWrap, i, this.data)
+      // console.log('Change active', avoidWrap, i, this.data)
       if (i >= this.data.list.length)
         i = avoidWrap ? this.data.list.length - 1 : 0;
       else if (i < 0)

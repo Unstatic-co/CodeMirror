@@ -79,17 +79,31 @@ li.CodeMirror-hint-active {
 
 /* icon hint */
 .cmw-icon {
-  margin-right: 4px;
-  width: fit-content !important;
-  block-size: fit-content;
+  width: 16px !important;
+  height: 16px !important;
+  transform: translateY(-2px) !important;
+  opacity: 1 !important;
+  vertical-align: middle;
+}
+
+.codemirror-hint-table--icon .cmw-icon::after {
+  content: url('./icons/ic-products.svg') !important;
   width: 16px;
   height: 16px;
 }
 
-.cmw-icon::after {
-  content: '' !important;
-  background-image: url('./icons/ic-products.svg');
+.codemirror-hint-currentvalue--icon .cmw-icon::after {
+  content: url('./icons/ic-current-value-tag-type.svg') !important;
+  width: 16px;
+  height: 16px;
 }
+
+.codemirror-hint-currentuser--icon .cmw-icon::after {
+  content: url('./icons/ic-current-user-tag-type.svg') !important;
+  width: 16px;
+  height: 16px;
+}
+
 
 
 /** doc hint */

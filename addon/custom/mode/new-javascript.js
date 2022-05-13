@@ -22,16 +22,19 @@
     Products: {
       key: 'products',
       type: 'table',
-      properties: null
+      properties: null,
+      description: 'table'
     },
     Cars: {
-      key: 'products',
-      type: 'card',
-      properties: null
+      key: 'card',
+      type: 'table',
+      properties: null,
+      description: 'table'
     },
     CurrentValue: {
       key: 'currentvalue',
       type: 'currentvalue',
+      description: 'Products row',
       properties: {
         Date: {
           key: 'date',
@@ -54,6 +57,7 @@
     CurrentUser: {
       key: 'currentuser',
       type: 'currentuser',
+      description: 'Products row',
       properties: {
         Name: {
           key: 'Name',
