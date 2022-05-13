@@ -1082,3 +1082,7 @@ span.CodeMirror-selectedtext {
 .test .CodeMirror-selected {
   display: none !important;
 }
+
+.cmw-snippet-tabstop {
+  text-decoration: unset !important;
+}

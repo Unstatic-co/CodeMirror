@@ -110,7 +110,6 @@
       handleOnMousedown(_cm, event, state);
       const el = document.querySelector('.CodeMirror-lines');
       el.classList.add('test')
-      console.log('mousedown ==>', el)
     })
 
     cm.on('keydown', function (_cm, event) {
@@ -123,21 +122,20 @@
       handleDblclick(cm, event, state)
     })
 
-    cm.on('change', function (_cm, data) {
-      const line = _cm.doc.getCursor().line;
-      const textOfLine = _cm.doc.getLine(line);
+    // cm.on('change', function (_cm, data) {
+    //   const line = _cm.doc.getCursor().line;
+    //   const textOfLine = _cm.doc.getLine(line);
 
-      const value = _cm.getValue();
-      if (!value.includes(';') && !!textOfLine) {
-        _cm.showHint(hintOptions)
-      }
-    })
+    //   const value = _cm.getValue();
+    //   if (!value.includes(';') && !!textOfLine) {
+    //     _cm.showHint(hintOptions)
+    //   }
+    // })
 
 
     document.addEventListener('mouseup', function(){
       const el = document.querySelector('.CodeMirror-lines');
       el.classList.remove('test')
-      console.log('MOUSE UP ==>', el)
     })
 
   })
