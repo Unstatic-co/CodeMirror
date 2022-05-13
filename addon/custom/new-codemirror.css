@@ -525,7 +525,7 @@ div.CodeMirror-dragcursors {
 }
 
 .CodeMirror-focused .CodeMirror-selected {
-  background: blue;
+  background: #d9d9d9;
 }
 
 .CodeMirror-crosshair {
@@ -1077,3 +1077,8 @@ span.CodeMirror-selectedtext {
 .cm-single-table-tag {
   padding-left: 0 !important;
 } */
+
+
+.test .CodeMirror-selected {
+  display: none !important;
+}
