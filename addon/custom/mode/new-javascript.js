@@ -38,19 +38,35 @@
       properties: {
         Date: {
           key: 'date',
-          type: 'string'
+          type: 'string',
+          parent: 'currentvalue'
         },
         Discount: {
           key: 'discount',
-          type: 'number'
+          type: 'number',
+          parent: 'currentvalue'
         },
         Name: {
           key: 'Name',
-          type: 'string'
+          type: 'string',
+          parent: 'currentvalue',
+          properties: {
+            test: {
+              key: 'test',
+              type: 'string',
+              parent: 'currentvalue'
+            },
+            Name: {
+              key: 'Name',
+              type: 'string',
+              parent: 'currentvalue'
+            }
+          }
         },
         Price: {
           key: 'Price',
-          type: 'number'
+          type: 'number',
+          parent: 'currentvalue'
         }
       }
     },
@@ -61,7 +77,8 @@
       properties: {
         Name: {
           key: 'Name',
-          type: 'string'
+          type: 'string',
+          parent: 'currentuser'
         }
       }
     },

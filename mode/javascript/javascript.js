@@ -22,42 +22,63 @@
     Products: {
       key: 'products',
       type: 'table',
-      properties: null
+      properties: null,
+      description: 'table'
     },
     Cars: {
-      key: 'products',
-      type: 'card',
-      properties: null
+      key: 'card',
+      type: 'table',
+      properties: null,
+      description: 'table'
     },
     CurrentValue: {
       key: 'currentvalue',
       type: 'currentvalue',
+      description: 'Products row',
       properties: {
         Date: {
           key: 'date',
-          type: 'string'
+          type: 'string',
+          parent: 'currentvalue'
         },
         Discount: {
           key: 'discount',
-          type: 'number'
+          type: 'number',
+          parent: 'currentvalue'
         },
         Name: {
           key: 'Name',
-          type: 'string'
+          type: 'string',
+          parent: 'currentvalue',
+          properties: {
+            test: {
+              key: 'test',
+              type: 'string',
+              parent: 'currentvalue'
+            },
+            Name: {
+              key: 'Name',
+              type: 'string',
+              parent: 'currentvalue'
+            }
+          }
         },
         Price: {
           key: 'Price',
-          type: 'number'
+          type: 'number',
+          parent: 'currentvalue'
         }
       }
     },
     CurrentUser: {
       key: 'currentuser',
       type: 'currentuser',
+      description: 'Products row',
       properties: {
         Name: {
           key: 'Name',
-          type: 'string'
+          type: 'string',
+          parent: 'currentuser'
         }
       }
     },
@@ -132,15 +153,25 @@ CodeMirror.defineMode("javascript", function(config, parserConfig) {
       // formulaTagCurrent = null;
       return ret("number", "number");
     } else if (ch == "." && stream.match("..")) {
-      // formulaTagCurrent = null;
+      formulaTagCurrent = null;
       return ret("spread", "meta");
     } else if (/[\[\]{}\(\),;\:\.]/.test(ch)) {
       //[Ntank] Check case word is dots of tag
       const word = stream.current();
       const isDots = word.match(/\./g);
       if(isDots && isDots.length && formulaTagCurrent){
-        const _class = `dots-${formulaTagCurrent.type}-tag`
-        return ret(_class, _class, word);
+        const nextText = findTextSibling(stream.string, stream.start, true);
+        const _isPropertyTag = isPropertyTag(nextText, formulaTagCurrent);
+        // console.log('TEXT PREV =>', word)
+        if(_isPropertyTag){
+          const prevText = findTextSibling(stream.string, stream.start, false);
+          if(!!prevText){
+            const _class = `dots-${formulaTagCurrent.parent || formulaTagCurrent.type}-tag`;
+            return ret(_class, _class, word);
+          }
+        }
+        formulaTagCurrent = null;
+        return ret(ch)
       }
       formulaTagCurrent = null;
       return ret(ch)
@@ -171,6 +202,7 @@ CodeMirror.defineMode("javascript", function(config, parserConfig) {
       } else {
         stream.eat("=");
         formulaTagCurrent = null;
+        // console.log('RUN CASE 01')
         return ret("operator", "operator", stream.current());
       }
     } else if (ch == "`") {
@@ -201,6 +233,7 @@ CodeMirror.defineMode("javascript", function(config, parserConfig) {
       }
       if (ch == "?" && stream.eat(".")) return ret(".")
       formulaTagCurrent = null;
+      // console.log('RUN CASE 02')
       return ret("operator", "operator", stream.current());
     } else if (wordRE.test(ch)) {
       stream.eatWhile(wordRE);
@@ -221,8 +254,7 @@ CodeMirror.defineMode("javascript", function(config, parserConfig) {
       const stringOfLine = stream.string;
       if(formulaTags[word]){
         formulaTagCurrent = formulaTags[word];
-        // const indexWord= stringOfLine.indexOf(word);
-        const nextText = findTextSibling(word, stringOfLine, stream.start);
+        const nextText = findTextSibling(stringOfLine, stream.start);
         const _isPropertyTag = isPropertyTag(nextText, formulaTagCurrent);
         const tagType = formulaTags[word].type;
         if(_isPropertyTag){
@@ -236,24 +268,28 @@ CodeMirror.defineMode("javascript", function(config, parserConfig) {
       if(formulaTagCurrent){
         const _isPropertyTag = isPropertyTag(word, formulaTagCurrent);
         if(_isPropertyTag){
-          const nextText = findTextSibling(word, stringOfLine, stream.start);
-          const tagType = formulaTagCurrent.type;
+          formulaTagCurrent = formulaTagCurrent.properties[word]
+          const nextText = findTextSibling(stringOfLine, stream.start);
+          const tagType = formulaTagCurrent.parent || formulaTagCurrent.type;
           if(!!!nextText) {
             return ret(`end-${tagType}-tag`, `end-${tagType}-tag`, word);
           }
+
           const _isPropertySiblingTag = isPropertyTag(nextText, formulaTagCurrent);
           if(_isPropertySiblingTag){
             return ret(`middle-${tagType}-tag`, `middle-${tagType}-tag`, word);
           }
 
           return ret(`end-${tagType}-tag`, `end-${tagType}-tag`, word);
-
         }
       }
+      
       formulaTagCurrent = null;
-
       return ret("variable", "variable", word)
+    }else {
+      formulaTagCurrent = null;
     }
+
   }
 
   function tokenString(quote) {
@@ -983,22 +1019,30 @@ CodeMirror.defineMode("javascript", function(config, parserConfig) {
       (state.lastType == "quasi" && /\{\s*$/.test(stream.string.slice(0, stream.pos - (backUp || 0))))
   }
 
+  // [Ntank] Check text is property of formula schema
   function isPropertyTag (word = '', formulaTag) {
     const _word = word.trim();
     if(!formulaTag || !formulaTag.properties) return false
     return formulaTag.properties.hasOwnProperty(_word);
   }
 
-  function findTextSibling (word = '', stringOfLine = '', start) {
-    const _stringOfLine = stringOfLine.slice(0, start+word.length)
-    const indexWord = _stringOfLine.lastIndexOf(word);
-    const shortStringOfLine = stringOfLine.slice(indexWord, 100 + indexWord);
-    
-    // const shortStringOfLineReplace = shortStringOfLine.replace(/\(/g,'.').replace(/\)/g,'.');
-    // const shortStringOfLineReplace = shortStringOfLine.replace(/\(/g,'.').replace(/\)/g,'.').replace(/\=/g,'.').replace(/\>/g,'.');
-    const shortStringOfLineReplace = shortStringOfLine.replace(/\{|\}|#|_|=|<|>|\?|\,|\:|\"|\'|\~|\ |\(|\)/g,'.').trim();
+  /**
+   * [Ntank] find text
+   * @param {*} word -> text current
+   * @param {*} stringOfLine -> text of line current
+   * @param {*} start -> position start of word current
+   * @param {*} startToEnd -> 1: get text from start to range | 0: get text from range to start
+   * @returns string
+   */
+  function findTextSibling (stringOfLine = '', start, startToEnd = true) {
+    const RANGE_CHARACTER = 150;
+    const shortStringOfLine = startToEnd ?
+        stringOfLine.slice(start, RANGE_CHARACTER + start) :
+        stringOfLine.slice(start - RANGE_CHARACTER, start);
+    const shortStringOfLineReplace = shortStringOfLine.replace(/[`..~!@#$%^&*()_|+\-=?;: '",.<>\{\}\[\]\\\/]/gi, '.');
     const stringList = shortStringOfLineReplace.split('.');
-    return stringList[1] || '';
+    const _string = startToEnd ? stringList[1] : stringList[stringList.length - 1]
+    return _string || '';
   }
 
   // Interface

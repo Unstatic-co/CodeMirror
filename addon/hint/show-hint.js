@@ -266,7 +266,7 @@
       elt.setAttribute("role", "option")
       if (cur.render) {
         cur.render(elt, data, cur);
-        const type = CodeMirror.formulaTags[cur.displayText];
+        const type = CodeMirror.formulaTags[cur.displayText] ? CodeMirror.formulaTags[cur.displayText].type : '';
         elt.classList.add(`codemirror-hint-${type}--icon`);
       } else {
         elt.appendChild(ownerDocument.createTextNode(cur.displayText || getText(cur)));
@@ -313,7 +313,7 @@
       elt.addEventListener('mouseenter', function(e){
         // todo
         const _elt = e.target;
-        const _eltDocumentHint = _elt.children[0];
+        const _eltDocumentHint = _elt.children[1];
         // const eltRect = _elt.getBoundingClientRect();
         const hintsRect = hints.getBoundingClientRect();
         const SPACE = 2;
@@ -329,7 +329,7 @@
       elt.addEventListener('mouseleave', function(e){
         // todo
         const _elt = e.target;
-        const _eltDocumentHint = _elt.children[0];
+        const _eltDocumentHint = _elt.children[1];
         // const eltRect = _elt.getBoundingClientRect();
         const hintsRect = hints.getBoundingClientRect();
         const SPACE = 2;
