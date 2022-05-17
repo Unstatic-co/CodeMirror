@@ -69,11 +69,31 @@ function drawSelectionRange(cm, range, output) {
   let docLTR = doc.direction == "ltr"
 
   function add(left, top, width, bottom) {
+    // [Ntank] custom width selected
+    const formulaTags = CodeMirror.formulaTags
+    const token = cm.getTokenAt({
+      line: range.anchor.line,
+      ch:  range.anchor.ch + 1
+    }, true);
+    let _width = width,
+      _left = left,
+      _top = top;
+    
+    if(formulaTags[token.string]){
+      const PADDING = 27,
+        PADDING_2 = 22,
+        BORDER = 1;
+      _width = width + PADDING;
+      _left = left - PADDING_2;
+      _top = top + BORDER; 
+    }
+    
+    console.log('RUN 11', left, top, width, bottom, CodeMirror.formulaTags, cm , range, output, token, cm.getSelection())
     if (top < 0) top = 0
     top = Math.round(top)
     bottom = Math.round(bottom)
-    fragment.appendChild(elt("div", null, "CodeMirror-selected", `position: absolute; left: ${left}px;
-                             top: ${top}px; width: ${width == null ? rightSide - left : width}px;
+    fragment.appendChild(elt("div", null, "CodeMirror-selected", `position: absolute; left: ${_left}px;
+                             top: ${_top}px; width: ${width == null ? rightSide - left : _width}px;
                              height: ${bottom - top}px`))
   }
 
@@ -91,13 +111,13 @@ function drawSelectionRange(cm, range, output) {
       let ch = side == "after" ? extent.begin : extent.end - (/\s/.test(lineObj.text.charAt(extent.end - 1)) ? 2 : 1)
       return coords(ch, prop)[prop]
     }
-
     let order = getOrder(lineObj, doc.direction)
     iterateBidiSections(order, fromArg || 0, toArg == null ? lineLen : toArg, (from, to, dir, i) => {
       let ltr = dir == "ltr"
       let fromPos = coords(from, ltr ? "left" : "right")
       let toPos = coords(to - 1, ltr ? "right" : "left")
-
+      
+      console.log('RUN 33', fromPos, toPos)
       let openStart = fromArg == null && from == 0, openEnd = toArg == null && to == lineLen
       let first = i == 0, last = !order || i == order.length - 1
       if (toPos.top - fromPos.top <= 3) { // Single line
@@ -105,6 +125,7 @@ function drawSelectionRange(cm, range, output) {
         let openRight = (docLTR ? openEnd : openStart) && last
         let left = openLeft ? leftSide : (ltr ? fromPos : toPos).left
         let right = openRight ? rightSide : (ltr ? toPos : fromPos).right
+        console.log('RUN 22', right, left, docLTR)
         add(left, fromPos.top, right - left, fromPos.bottom)
       } else { // Multiple lines
         let topLeft, topRight, botLeft, botRight

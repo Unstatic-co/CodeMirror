@@ -80,12 +80,11 @@
     }
 
     cm.on('mousedown', function (_cm, event) {
-      console.log('EVENT 222 ==>', 'mousedown')
       handleOnMousedown(_cm, event, state);
     })
 
     cm.on('keyup', function (cm, event) {
-      console.log('keyup', cm, event)
+      // console.log('keyup', cm, event)
     })
 
     cm.on('keydown', function (_cm, event) {
@@ -96,7 +95,6 @@
 
     cm.on('dblclick', function (_cm, event) {
       state['event'] = 'dblclick';
-      console.log('EVENT ==>', 'dblclick')
       handleDblclick(cm, event, state);
     })
 
@@ -113,6 +111,14 @@
     //     _cm.showHint(hintOptions)
     //   }
     // })
+
+    document.addEventListener('select', function(event){
+      console.log('EVENT SELECT ==>', event)
+    })
+
+    document.addEventListener('dragstart', function(event){
+      console.log('EVENT dragstart ==>', event)
+    })
 
   })
 
@@ -185,7 +191,6 @@
       state['tagValue'] = textOfElement;
       state['posStart'] = posStart;
       state['posEnd'] = posEnd;
-      console.log('TEXT ==>', textOfElement, posEnd, posStart)
       // elCursors.style.display = 'none';
     } else {
       // elCursors.style.display = 'unset';
@@ -218,7 +223,6 @@
 
     state['keyName'] = keyName;
     // state['event'] = 'keydown';
-    console.log('KEY NAME =>', keyName)
     return;
 
 
@@ -235,7 +239,6 @@
     //   const ch2 = token.end + state.posEnd;
     //   const sticky = null;
 
-    //   console.log('TEXT 222 =>', ch1, ch2, token, state, keyName);
     //   // doc.setSelection({ch: ch1, line,sticky},{ch: ch2, line, sticky});
 
     // }
@@ -304,7 +307,6 @@
   }
 
   function handleCursorsActivity(cm, state) {
-    console.log('CursorsActivity ===>', cm);
     const doc = cm.getDoc();
     const cursor = doc.getCursor();
     const token = cm.getTokenAt({
@@ -312,19 +314,30 @@
       ch: cursor.ch
     }, true);
 
-    console.log('RESULT ==>', token, cursor, state, !!token.string.trim(), state.event);
+    console.log('RESULT ==>', token, cursor, state, state['clientSomethingSelected'] );
     if (state.event === 'dblclick') {
-      console.log('RUN DBLCLICK', cursor)
+      state['clientSomethingSelected'] = false;
       return;
     }
 
     if (!token.start && !token.end) {
-      showCursorInHeadLine(state.elCursors)
+      showCursorInHeadLine(state.elCursors);
+      state['clientSomethingSelected'] = false;
       return
     }
 
+    
     //* Cursor activity on [TAG]
     if (formulaTagClass[`cm-${token.type}`] && token.string && !!token.string.trim() && (state.event === 'mousedown' || state.keyName === 'Left' || state.keyName === 'Right')) {
+      
+      const elCodemirror = document.querySelector('.CodeMirror');
+      if(elCodemirror){ elCodemirror.classList.add('formula-codeMirror') }
+
+      const tagEditing = cursor.ch > state.startTag +1 && cursor.ch < state.endTag;
+      if(tagEditing) {
+        console.log('Editing ==>');
+        // return
+      };
 
       const {
         startTag,
@@ -334,10 +347,8 @@
       state['startTag'] = startTag;
       state['endTag'] = endTag;
 
-      console.log('SELECTION =>', cm.somethingSelected(), state.event);
 
       if (state['event'] === 'mousedown') {
-        console.log('RUN 11', cm.somethingSelected(), cursor);
         if (!cm.somethingSelected()) {
           state['mousedownCursors'] = cursor;
         }
@@ -347,7 +358,6 @@
       }
 
       if (!state['clientSomethingSelected']) {
-        console.log('RUN 22')
         highlightTag(cm, startTag, endTag);
         state['clientSomethingSelected'] = true;
       } else {
@@ -356,20 +366,9 @@
 
       return
     }
+    const elCodemirror = document.querySelector('.CodeMirror');
+    if(elCodemirror){ elCodemirror.classList.remove('formula-codeMirror') }
     state['clientSomethingSelected'] = false;
-  }
-
-  function cachingValueTag(func) {
-    const cache = new Map();
-
-    return function (x) {
-      if (cache.has(x)) {
-        return cache.get(x);
-      }
-      const result = func(x);
-      cache.set(x, result);
-      return result;
-    }
   }
 
   // Get value tag
@@ -433,6 +432,40 @@
       line: cursor.line,
       sticky: cursor.sticky
     })
+    customUiSelected();
+  }
+
+  function customUiSelected(){
+    const elSelected = document.querySelector('.CodeMirror-selected');
+    if(elSelected){
+      elSelected.classList.add('f-CodeMirror-selected');
+      console.log(111111111, elSelected);
+      // elSelected.style.opacity = 1;
+      // elSelected.style.left = `calc(${elSelected.style.left} - 22px)`;
+      // elSelected.style.width = `calc(${elSelected.style.width} + 28px)`;
+      // elSelected.style.top = `calc(${elSelected.style.top} + 1px)`;
+      // elSelected.style.borderRadius = `20px`;
+    }
+    setTimeout(() => {
+      // const elSelected = document.querySelector('.CodeMirror-selected');
+      // elSelected.style.left = `calc(${elSelected.style.left} - 22px)`;
+      // elSelected.style.width = `calc(${elSelected.style.width} + 28px)`;
+      // elSelected.style.top = `calc(${elSelected.style.top} + 1px)`;
+      // elSelected.style.borderRadius = `20px`;
+      // elSelected.style.opacity = 1;
+    }, 500);
+  }
+
+  // Show cursor activity on tag
+  function showCursorActivityOnTag(state){
+    const PADDING = '25px';
+    if(!state) return;
+    state.elCursors.style.opacity = 0;
+    setTimeout(() => {
+      const elCursor = state.elCursors.querySelector('.CodeMirror-cursor');
+      elCursor.style.left = `calc(${elCursor.style.left} - ${PADDING})`;
+      state.elCursors.style.opacity = 1;
+    }, 0);
   }
 
   function showCursorToLeft(cm, state, line) {

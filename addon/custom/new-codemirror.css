@@ -1078,9 +1078,9 @@ span.CodeMirror-selectedtext {
   padding-left: 0 !important;
 } */
 
-
-.test .CodeMirror-selected {
-  display: none !important;
+/* custom selected */
+.formula-codeMirror .CodeMirror-selected  {
+  border-radius: 20px;
 }
 
 .cmw-snippet-tabstop {
